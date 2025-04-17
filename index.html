@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELCOME TO MY WORLD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: black
+                    }            // High-definition Low Poly Plane Geometry
+            const planeWidth = 150;
+            const planeHeight = 150;
+            const widthSegments = 200; // Increased for higher definition
+            const heightSegments = 200;
+            
+            const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, widthSegments, heightSegments);
+            const vertices = geometry.attributes.position;
+            const colors = [];
+            const originalZ = [];
+            const baseColors = [];
+            
+            const blueColors = [
+                new THREE.Color(0x0a1a2f),
+                new THREE.Color(0x102a4c),
+                new THREE.Color(0x1a3a6a),
+                new THREE.Color(0x26508e),
+                new THREE.Color(0x3a6aa0)
+            ];
+            
+            for (let i = 0; i < vertices.count; i++) {
+                const z = Math.random() * 2.5 - 1.25;
+                vertices.setZ(i, z);
+                originalZ.push(z);
+            
+                const zValue = vertices.getZ(i);
+                let colorIndex = 0;
+                if (zValue > 0.8) colorIndex = 4;
+                else if (zValue > 0.3) colorIndex = 3;
+                else if (zValue > -0.3) colorIndex = 2;
+                else if (zValue > -0.8) colorIndex = 1;
+            
+                const color = blueColors[colorIndex];
+                colors.push(color.r, color.g, color.b);
+                baseColors.push(color.r, color.g, color.b);
+            }
+            vertices.needsUpdate = true;
+            geometry.computeVertexNormals();
+            
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setAttribute('baseColor', new THREE.Float32BufferAttribute([...colors], 3));
+            geometry.userData.originalZ = originalZ;
+            
+            const material = new THREE.MeshStandardMaterial({
+                vertexColors: true,
+                side: THREE.DoubleSide,
+                flatShading: true // Keeps the low-poly look
+            });
+            
+            lowPolyMesh = new THREE.Mesh(geometry, material);
+            lowPolyMesh.rotation.x = -Math.PI / 2.2;
+            lowPolyMesh.position.y = -10;
+            scene.add(lowPolyMesh);
+            
+            // Add Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft ambient light
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(50, 50, 50);
+            scene.add(directionalLight);;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding-top: 300px;   /* Add space from the top */
+    padding-bottom: 0;
+    min-height: unset;   /* Remove vertical centering */
+    justify-content: flex-start; /* Remove vertical centering */
+}
+    </style>
+</head>
+<body class="bg-black">
+    <canvas id="bg-canvas"></canvas>
+    <div class="content-container">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-wider leading-tight">
+            WELCOME TO MY WORLD
+        </h1>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, lowPolyMesh, stars, raycaster, mouse;
+        let clock = new THREE.Clock();
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.set(0, 5, 25);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Starfield
+            const starVertices = [];
+            const numStars = 5000;
+            const starSpread = 1000;
+
+            for (let i = 0; i < numStars; i++) {
+                const x = THREE.MathUtils.randFloatSpread(starSpread * 2);
+                const y = THREE.MathUtils.randFloat(10, starSpread);
+                const z = THREE.MathUtils.randFloatSpread(starSpread * 2);
+                if (Math.sqrt(x*x + y*y + z*z) > 100) {
+                    starVertices.push(x, y, z);
+                }
+            }
+
+            const starGeometry = new THREE.BufferGeometry();
+starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+
+const starMaterial = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 3.5, // Larger for more prominence
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 2.8,
+    map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png'),
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+});
+
+stars = new THREE.Points(starGeometry, starMaterial);
+scene.add(stars);
+
+            // High-definition Low Poly Plane Geometry
+const planeWidth = 150;
+const planeHeight = 150;
+const widthSegments = 200; // Increased for higher definition
+const heightSegments = 200;
+
+const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, widthSegments, heightSegments);
+const vertices = geometry.attributes.position;
+const colors = [];
+const originalZ = [];
+const baseColors = [];
+
+const blueColors = [
+    new THREE.Color(0x0a1a2f),
+    new THREE.Color(0x102a4c),
+    new THREE.Color(0x1a3a6a),
+    new THREE.Color(0x26508e),
+    new THREE.Color(0x3a6aa0)
+];
+
+for (let i = 0; i < vertices.count; i++) {
+    const z = Math.random() * 2.5 - 1.25;
+    vertices.setZ(i, z);
+    originalZ.push(z);
+
+    const zValue = vertices.getZ(i);
+    let colorIndex = 0;
+    if (zValue > 0.8) colorIndex = 4;
+    else if (zValue > 0.3) colorIndex = 3;
+    else if (zValue > -0.3) colorIndex = 2;
+    else if (zValue > -0.8) colorIndex = 1;
+
+    const color = blueColors[colorIndex];
+    colors.push(color.r, color.g, color.b);
+    baseColors.push(color.r, color.g, color.b);
+}
+vertices.needsUpdate = true;
+geometry.computeVertexNormals();
+
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+geometry.setAttribute('baseColor', new THREE.Float32BufferAttribute([...colors], 3));
+geometry.userData.originalZ = originalZ;
+
+const material = new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    flatShading: true // Keeps the low-poly look
+});
+
+lowPolyMesh = new THREE.Mesh(geometry, material);
+lowPolyMesh.rotation.x = -Math.PI / 2.2;
+lowPolyMesh.position.y = -10;
+scene.add(lowPolyMesh);
+
+// Add Lighting
+const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft ambient light
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(50, 50, 50);
+scene.add(directionalLight);
+
+            // Raycaster for mouse interaction
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            window.addEventListener('mousemove', onMouseMove, false);
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function onMouseMove(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(lowPolyMesh);
+
+    const colors = lowPolyMesh.geometry.attributes.color;
+    const baseColors = lowPolyMesh.geometry.attributes.baseColor;
+
+    // Reset all colors to base
+    for (let i = 0; i < colors.count; i++) {
+        colors.setXYZ(i, baseColors.getX(i), baseColors.getY(i), baseColors.getZ(i));
+    }
+
+    if (intersects.length > 0) {
+        const face = intersects[0].face;
+        const vertices = [face.a, face.b, face.c];
+
+        // Highlight the intersected face
+        vertices.forEach(vertexIndex => {
+            const baseColor = new THREE.Color(
+                baseColors.getX(vertexIndex),
+                baseColors.getY(vertexIndex),
+                baseColors.getZ(vertexIndex)
+            );
+            const highlightedColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 0.5); // Increased brightness
+            colors.setXYZ(vertexIndex, highlightedColor.r, highlightedColor.g, highlightedColor.b);
+        });
+
+        // Highlight nearby vertices (increase surface area)
+        const radius = 2; // Adjust this value to control the highlight area
+        for (let i = 0; i < colors.count; i++) {
+            const vertexPosition = new THREE.Vector3(
+                lowPolyMesh.geometry.attributes.position.getX(i),
+                lowPolyMesh.geometry.attributes.position.getY(i),
+                lowPolyMesh.geometry.attributes.position.getZ(i)
+            );
+
+            const intersectedPosition = intersects[0].point;
+            if (vertexPosition.distanceTo(intersectedPosition) < radius) {
+                const baseColor = new THREE.Color(
+                    baseColors.getX(i),
+                    baseColors.getY(i),
+                    baseColors.getZ(i)
+                );
+                const highlightedColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 0.3); // Slightly dimmer highlight
+                colors.setXYZ(i, highlightedColor.r, highlightedColor.g, highlightedColor.b);
+            }
+        }
+    }
+    colors.needsUpdate = true;
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const elapsedTime = clock.getElapsedTime();
+
+    if (lowPolyMesh) {
+        const vertices = lowPolyMesh.geometry.attributes.position;
+        const originalZ = lowPolyMesh.geometry.userData.originalZ;
+
+        // Fluid, harmonious wave motion
+        for (let i = 0; i < vertices.count; i++) {
+            const x = vertices.getX(i);
+            const y = vertices.getY(i);
+            const baseZ = originalZ[i];
+
+            // Main wave: depends on both x and y, and time
+            const wave =
+                Math.sin((x + elapsedTime * 2) * 0.18) * 0.6 +
+                Math.cos((y + elapsedTime * 2) * 0.18) * 0.6 +
+                Math.sin((x + y + elapsedTime) * 0.12) * 0.4;
+
+            vertices.setZ(i, baseZ + wave);
+        }
+        vertices.needsUpdate = true;
+    }
+
+    if (stars) {
+        stars.rotation.y += 0.0001;
+        // Twinkle effect
+        stars.material.opacity = 0.8 + Math.sin(elapsedTime * 2) * 0.2;
+    }
+
+    renderer.render(scene, camera);
+}
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }
+
+        initThreeJS();
+    </script>
+</body>
+</html>
