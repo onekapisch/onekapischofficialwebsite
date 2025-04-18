@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* General Body and Canvas Styles */
         body {
             margin: 0;
             overflow: hidden;
@@ -41,7 +40,6 @@
                 font-size: 2rem !important;
             }
         }
-
         /* Neon Button Styles (Unchanged) */
         .btn-76,
         .btn-76 *,
@@ -92,19 +90,19 @@
         .btn-76 .left { border-left: 4px solid var(--neon); opacity: 0; transform: translateY(calc(100% - var(--progress, 0%))); transition: none; }
         .btn-76:hover .left { --progress: 100%; opacity: 1; transition: transform 0.2s linear 0.6s; }
 
-        /* Tiles Section Styles */
+        /* Tiles Section General Styles */
         .tiles-section {
             width: 100vw;
             min-height: 100vh;
-            display: none; /* Hidden initially */
+            display: none;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             position: absolute;
             top: 0; left: 0;
-            z-index: 10; /* Above canvas */
-            background: transparent; /* Show canvas behind */
-            padding: 3rem 1rem; /* More padding top/bottom */
+            z-index: 10;
+            background: transparent;
+            padding: 3rem 1rem;
             box-sizing: border-box;
         }
         .tiles-section.active {
@@ -116,82 +114,108 @@
             to { opacity: 1; }
         }
 
-        /* === START: Tilted Tablet Tile Styles === */
-         /* Link wrapper for animation */
-        .tablet-card-link {
+        /* === START: Futuristic Acrylic Tile Styles === */
+        .futuristic-card-link {
             display: block;
             text-decoration: none;
-            color: inherit; /* Prevent link default color */
-            /* Initial animation state */
+            color: inherit;
             opacity: 0;
-            transform: translateY(200px) scale(0.7);
+            transform: translateY(100px) scale(0.9);
             will-change: transform, opacity;
-            transition: transform 0.7s cubic-bezier(.77,0,.18,1.01),
-                        opacity 0.5s cubic-bezier(.77,0,.18,1.01);
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .tablet-card-link.visible {
+        .futuristic-card-link.visible {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
-
-        /* Container to set perspective */
-        .tablet-container {
-            perspective: 1000px;
-            /* Add margin if needed between items in the grid */
-            /* margin: 1rem; */
-             display: flex; /* Center the frame within the container */
-            justify-content: center;
+        .futuristic-card {
+            position: relative;
+            background-color: rgba(25, 35, 55, 0.5);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 19.2px;
+            padding: 0.9rem;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.1),
+                        0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-out,
+                        background-color 0.3s ease-out,
+                        border-color 0.3s ease-out,
+                        box-shadow 0.3s ease-out;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .futuristic-card-link:hover .futuristic-card {
+            transform: translateY(-8px) scale(1.02);
+            background-color: rgba(35, 45, 65, 0.65);
+            border-color: rgba(56, 189, 248, 0.7);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3),
+                        0 10px 15px rgba(0, 0, 0, 0.3);
+        }
+        .futuristic-card-image {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #111827;
+            margin-left: 0;
+            display: flex;
             align-items: center;
+            justify-content: center;
         }
-
-        /* The tablet frame itself */
-        .tablet-frame {
-            /* Initial 3D tilt */
-            transform: rotateX(10deg) rotateY(15deg) rotateZ(-5deg);
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); /* Adjusted shadow */
-            /* Ensure flex-shrink is 0 if parent is flex */
-            flex-shrink: 0;
-            /* Use Tailwind for colors, size, padding, border, rounding */
-        }
-
-        /* Hover effect: flatten the view and lift shadow */
-        .tablet-container:hover .tablet-frame {
-            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3); /* Lifted shadow */
-        }
-
-        /* Ensure image covers screen area */
-        .tablet-screen img {
-            display: block; /* Remove extra space below image */
+        .futuristic-card-image img {
+            display: block;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Cover the area, might crop */
+            object-fit: contain;
+            transition: transform 0.3s ease-out;
+            background: #111827;
         }
-        /* === END: Tilted Tablet Tile Styles === */
-
-        /* Responsive adjustments */
-         @media (max-width: 640px) { /* sm breakpoint */
-             .tablet-frame {
-                 /* Adjust size for smaller screens */
-                 width: 200px !important; /* Example: Use !important if needed */
-                 height: 280px !important;
-                 padding: 0.5rem !important; /* p-2 */
-                 border-radius: 1rem !important; /* rounded-2xl */
+        .futuristic-card-link:hover .futuristic-card-image img {
+            transform: scale(1.05);
+        }
+        .futuristic-card-title {
+            text-align: center;
+            color: #e5e7eb;
+            margin-top: 0.9rem;
+            font-size: 1.05rem;
+            line-height: 1.5rem;
+            font-weight: 600;
+            transition: color 0.3s ease-out;
+        }
+        .futuristic-card-link:hover .futuristic-card-title {
+             color: #f9fafb;
+        }
+        @media (max-width: 640px) {
+             .futuristic-card {
+                 border-radius: 14.4px;
+                 padding: 0.6rem;
              }
-             .tablet-screen {
-                  border-radius: 0.75rem !important; /* rounded-xl */
+             .futuristic-card-image {
+                 border-radius: 9.6px;
+                 aspect-ratio: 1 / 1;
+                 width: 100%;
+                 margin-left: 0;
+             }
+             .futuristic-card-title {
+                 font-size: 0.9rem;
              }
              .tiles-section {
-                 padding: 2rem 0.5rem; /* Less padding on small screens */
+                 padding: 2.4rem 0.6rem;
+             }
+             .tiles-section .grid {
+                gap: 1.8rem;
              }
          }
-
+         @media (min-width: 641px) and (max-width: 1024px) {
+             .tiles-section .grid {
+                gap: 2.4rem;
+             }
+         }
     </style>
 </head>
 <body class="bg-black">
     <canvas id="bg-canvas"></canvas>
-
     <div class="content-container" id="main-content">
         <h1 id="welcome-title" class="text-5xl sm:text-5xl md:text-6xl font-black text-white tracking-wider leading-tight" style="font-family: 'Montserrat', sans-serif;">
             Kapisch
@@ -204,87 +228,63 @@
             <span class="left"></span>
         </button>
     </div>
-
     <div class="tiles-section" id="tiles-section">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 w-full max-w-6xl mx-auto">
-
-            <a href="https://lifehacksgermany.com" target="_blank" class="tablet-card-link" id="tile-1">
-                <div class="tablet-container">
-                    <div class="tablet-frame relative w-[240px] h-[340px] md:w-[270px] md:h-[380px] bg-black rounded-[24px] p-2 border border-gray-800">
-                        <div class="relative w-full h-full bg-gray-900 rounded-[18px] overflow-hidden">
-                            <div class="tablet-screen w-full h-full bg-white rounded-[16px] overflow-hidden">
-                                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=920,h=872,fit=crop/AQEpZaobklTjBqqM/wepik-untitled-project-20240812142105urxy-Yley4gewJlH0byN9.png"
-                                     alt="Life Hacks Germany Preview"
-                                     onerror="this.onerror=null; this.src='https://placehold.co/600x800/333/eee?text=Life+Hacks+DE';">
-                            </div>
-                        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl mx-auto px-4">
+            <a href="https://lifehacksgermany.com" target="_blank" class="futuristic-card-link" id="tile-1">
+                <div class="futuristic-card">
+                    <div class="futuristic-card-image">
+                        <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=920,h=872,fit=crop/AQEpZaobklTjBqqM/wepik-untitled-project-20240812142105urxy-Yley4gewJlH0byN9.png"
+                             alt="Life Hacks Germany Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Life+Hacks+DE';">
                     </div>
                 </div>
-                <div class="text-center text-gray-300 mt-3 text-sm md:text-base font-semibold">Life Hacks Germany</div>
+                <div class="futuristic-card-title">Life Hacks Germany</div>
             </a>
-
-            <a href="https://tankalert.de" target="_blank" class="tablet-card-link" id="tile-2">
-                <div class="tablet-container">
-                    <div class="tablet-frame relative w-[240px] h-[340px] md:w-[270px] md:h-[380px] bg-black rounded-[24px] p-2 border border-gray-800">
-                        <div class="relative w-full h-full bg-gray-900 rounded-[18px] overflow-hidden">
-                            <div class="tablet-screen w-full h-full bg-white rounded-[16px] overflow-hidden">
-                                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=928,h=624,fit=crop/AQEpZaobklTjBqqM/tank-alert-YX4apDN7vRT5yp47.png"
-                                     alt="Tank Alert Preview"
-                                     onerror="this.onerror=null; this.src='https://placehold.co/600x800/333/eee?text=Tank+Alert';">
-                            </div>
-                        </div>
+            <a href="https://tankalert.de" target="_blank" class="futuristic-card-link" id="tile-2">
+                <div class="futuristic-card">
+                    <div class="futuristic-card-image">
+                         <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=928,h=624,fit=crop/AQEpZaobklTjBqqM/tank-alert-YX4apDN7vRT5yp47.png"
+                              alt="Tank Alert Preview"
+                              onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Tank+Alert';">
                     </div>
                 </div>
-                 <div class="text-center text-gray-300 mt-3 text-sm md:text-base font-semibold">Tank Alert</div>
+                 <div class="futuristic-card-title">Tank Alert</div>
             </a>
-
-            <a href="https://techdealpro.com" target="_blank" class="tablet-card-link" id="tile-3">
-                <div class="tablet-container">
-                    <div class="tablet-frame relative w-[240px] h-[340px] md:w-[270px] md:h-[380px] bg-black rounded-[24px] p-2 border border-gray-800">
-                        <div class="relative w-full h-full bg-gray-900 rounded-[18px] overflow-hidden">
-                            <div class="tablet-screen w-full h-full bg-white rounded-[16px] overflow-hidden">
-                                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=910,h=412,fit=crop/AQEpZaobklTjBqqM/tech-deal-pro-1-dWxbL39q8ZUarER5.png"
-                                     alt="Tech Deal Pro Preview"
-                                     onerror="this.onerror=null; this.src='https://placehold.co/600x800/333/eee?text=TechDealPro';">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center text-gray-300 mt-3 text-sm md:text-base font-semibold">Tech Deal Pro</div>
-            </a>
-
-            <a href="https://yourwebsite4.com" target="_blank" class="tablet-card-link" id="tile-4">
-                <div class="tablet-container">
-                     <div class="tablet-frame relative w-[240px] h-[340px] md:w-[270px] md:h-[380px] bg-black rounded-[24px] p-2 border border-gray-800">
-                         <div class="relative w-full h-full bg-gray-900 rounded-[18px] overflow-hidden">
-                             <div class="tablet-screen w-full h-full bg-white rounded-[16px] overflow-hidden">
-                                 <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80"
-                                      alt="Website 4 Preview"
-                                      onerror="this.onerror=null; this.src='https://placehold.co/600x800/333/eee?text=Website+4';">
-                             </div>
-                         </div>
+            <a href="https://techdealpro.com" target="_blank" class="futuristic-card-link" id="tile-3">
+                <div class="futuristic-card">
+                     <div class="futuristic-card-image">
+                         <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=910,h=412,fit=crop/AQEpZaobklTjBqqM/tech-deal-pro-1-dWxbL39q8ZUarER5.png"
+                              alt="Tech Deal Pro Preview"
+                              onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=TechDealPro';">
                      </div>
                  </div>
-                 <div class="text-center text-gray-300 mt-3 text-sm md:text-base font-semibold">Website 4</div>
+                <div class="futuristic-card-title">Tech Deal Pro</div>
+            </a>
+            <a href="https://yourwebsite4.com" target="_blank" class="futuristic-card-link" id="tile-4">
+                <div class="futuristic-card">
+                     <div class="futuristic-card-image">
+                         <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80"
+                              alt="Website 4 Preview"
+                              onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Website+4';">
+                     </div>
+                 </div>
+                 <div class="futuristic-card-title">Website 4</div>
              </a>
-
-        </div> </div> <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         let scene, camera, renderer, lowPolyMesh, stars, raycaster, mouse;
         let clock = new THREE.Clock();
-
-        // Flying effect variables
         let isFlying = false;
         let flyStartTime = 0;
-        const flyDuration = 3.5; // seconds
+        const flyDuration = 3.5;
         let cameraStart = { y: 5, z: 25 };
-        let cameraEnd = { y: 30, z: -80 }; // Move forward and up
-
+        let cameraEnd = { y: 30, z: -80 };
         let hasTransitioned = false;
         let tilesAnimated = false;
 
         function initThreeJS() {
-            // Three.js setup (Unchanged)
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x000000);
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -293,15 +293,13 @@
             renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            // Starfield (Unchanged)
+            // Starfield
             const starVertices = []; const numStars = 5000; const starSpread = 1000;
             for (let i = 0; i < numStars; i++) { const x = THREE.MathUtils.randFloatSpread(starSpread * 2); const y = THREE.MathUtils.randFloat(10, starSpread); const z = THREE.MathUtils.randFloatSpread(starSpread * 2); if (Math.sqrt(x*x + y*y + z*z) > 100) { starVertices.push(x, y, z); } }
             const starGeometry = new THREE.BufferGeometry(); starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
             const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 3.5, sizeAttenuation: true, transparent: true, opacity: 2.8, map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png'), blending: THREE.AdditiveBlending, depthWrite: false });
             stars = new THREE.Points(starGeometry, starMaterial); scene.add(stars);
-
-            // Low Poly Plane Geometry (Unchanged)
+            // Low Poly Plane Geometry
             const planeWidth = 150; const planeHeight = 150; const widthSegments = 200; const heightSegments = 200;
             const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, widthSegments, heightSegments);
             const vertices = geometry.attributes.position; const colors = []; const originalZ = []; const baseColors = [];
@@ -311,47 +309,53 @@
             geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3)); geometry.setAttribute('baseColor', new THREE.Float32BufferAttribute([...colors], 3)); geometry.userData.originalZ = originalZ;
             const material = new THREE.MeshStandardMaterial({ vertexColors: true, side: THREE.DoubleSide, flatShading: true });
             lowPolyMesh = new THREE.Mesh(geometry, material); lowPolyMesh.rotation.x = -Math.PI / 2.2; lowPolyMesh.position.y = -10; scene.add(lowPolyMesh);
-
-            // Lighting (Unchanged)
+            // Lighting
             const ambientLight = new THREE.AmbientLight(0x404040, 1.0); scene.add(ambientLight);
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1); directionalLight.position.set(1000, 100, 100); scene.add(directionalLight);
-
-            // Raycaster (Unchanged)
+            // Raycaster
             raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
-
             window.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener('resize', onWindowResize, false);
             animate();
         }
 
         function onMouseMove(event) {
-            // Mouse move interaction logic (Unchanged)
-             if (hasTransitioned) return;
+            if (hasTransitioned) return;
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObject(lowPolyMesh);
             const colors = lowPolyMesh.geometry.attributes.color; const baseColors = lowPolyMesh.geometry.attributes.baseColor;
             for (let i = 0; i < colors.count; i++) { colors.setXYZ(i, baseColors.getX(i), baseColors.getY(i), baseColors.getZ(i)); }
             if (intersects.length > 0) {
-                const face = intersects[0].face; const vertices = [face.a, face.b, face.c];
-                vertices.forEach(vertexIndex => { const baseColor = new THREE.Color(baseColors.getX(vertexIndex), baseColors.getY(vertexIndex), baseColors.getZ(vertexIndex)); const highlightedColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 2.0); colors.setXYZ(vertexIndex, highlightedColor.r, highlightedColor.g, highlightedColor.b); });
-                const radius = 2;
-                for (let i = 0; i < colors.count; i++) {
-                    const vertexPosition = new THREE.Vector3(lowPolyMesh.geometry.attributes.position.getX(i), lowPolyMesh.geometry.attributes.position.getY(i), lowPolyMesh.geometry.attributes.position.getZ(i));
-                    const intersectedPosition = intersects[0].point;
-                    if (vertexPosition.distanceTo(intersectedPosition) < radius) { const baseColor = new THREE.Color(baseColors.getX(i), baseColors.getY(i), baseColors.getZ(i)); const highlightedColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 0.3); colors.setXYZ(i, highlightedColor.r, highlightedColor.g, highlightedColor.b); }
+                const face = intersects[0].face; const verticesIndices = [face.a, face.b, face.c];
+                const intersectionPoint = intersects[0].point;
+                const highlightRadius = 3;
+                verticesIndices.forEach(vertexIndex => {
+                    const baseColor = new THREE.Color(baseColors.getX(vertexIndex), baseColors.getY(vertexIndex), baseColors.getZ(vertexIndex));
+                    const highlightedColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 0.8);
+                    colors.setXYZ(vertexIndex, highlightedColor.r, highlightedColor.g, highlightedColor.b);
+                });
+                const positionAttribute = lowPolyMesh.geometry.attributes.position;
+                for (let i = 0; i < positionAttribute.count; i++) {
+                    if (verticesIndices.includes(i)) continue;
+                    const vertexPosition = new THREE.Vector3();
+                    vertexPosition.fromBufferAttribute(positionAttribute, i);
+                    const distance = vertexPosition.distanceTo(lowPolyMesh.worldToLocal(intersectionPoint.clone()));
+                    if (distance < highlightRadius) {
+                        const falloff = 1.0 - (distance / highlightRadius);
+                        const baseColor = new THREE.Color(baseColors.getX(i), baseColors.getY(i), baseColors.getZ(i));
+                        const highlightedColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 0.4 * falloff * falloff);
+                        colors.setXYZ(i, highlightedColor.r, highlightedColor.g, highlightedColor.b);
+                    }
                 }
             }
             colors.needsUpdate = true;
         }
 
         function easeInOutCubic(t) {
-            // Easing function (Unchanged)
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
 
-        // *** MODIFIED: Animate tiles using new structure ***
         function animateTilesIn() {
-            // Target the new link elements by ID
             const tiles = [
                 document.getElementById('tile-1'),
                 document.getElementById('tile-2'),
@@ -359,14 +363,13 @@
                 document.getElementById('tile-4')
             ];
             tiles.forEach((tile, i) => {
-                if (tile) { // Check if element exists
-                    tile.classList.remove('visible'); // Ensure it starts hidden
-                    tile.style.transitionDelay = '0s'; // Reset delay initially
-                    // Use setTimeout to apply staggered delay and add 'visible' class
+                if (tile) {
+                    tile.classList.remove('visible');
+                    tile.style.transitionDelay = '0s';
                     setTimeout(() => {
-                        tile.style.transitionDelay = (i * 0.09) + 's'; // Stagger delay
-                        tile.classList.add('visible'); // Trigger animation
-                    }, 60 + i * 90); // Stagger start time
+                        tile.style.transitionDelay = (i * 0.09) + 's';
+                        tile.classList.add('visible');
+                    }, 100 + i * 100);
                 }
             });
         }
@@ -374,8 +377,6 @@
         function animate() {
             requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
-
-            // Camera flying animation (Unchanged)
             if (isFlying) {
                 let t = (performance.now() - flyStartTime) / 1000 / flyDuration; t = Math.min(t, 1); t = easeInOutCubic(t);
                 camera.position.z = cameraStart.z + (cameraEnd.z - cameraStart.z) * t; camera.position.y = cameraStart.y + (cameraEnd.y - cameraStart.y) * t; camera.lookAt(0, 0, 0);
@@ -386,43 +387,44 @@
                         document.getElementById('main-content').style.display = 'none';
                         document.getElementById('tiles-section').classList.add('active');
                         if (!tilesAnimated) {
-                            animateTilesIn(); // Call the modified animation function
+                            animateTilesIn();
                             tilesAnimated = true;
                         }
-                    }, 600); // Delay after camera stops
+                    }, 600);
                 }
             }
-
-            // Low poly mesh wave animation (Unchanged)
-            if (lowPolyMesh) {
+            if (lowPolyMesh && !hasTransitioned) {
                 const vertices = lowPolyMesh.geometry.attributes.position; const originalZ = lowPolyMesh.geometry.userData.originalZ;
-                for (let i = 0; i < vertices.count; i++) { const x = vertices.getX(i); const y = vertices.getY(i); const baseZ = originalZ[i]; const wave = Math.sin((x + elapsedTime * 2) * 0.18) * 0.6 + Math.cos((y + elapsedTime * 2) * 0.18) * 0.6 + Math.sin((x + y + elapsedTime) * 0.12) * 0.4; vertices.setZ(i, baseZ + wave); }
+                for (let i = 0; i < vertices.count; i++) { const x = vertices.getX(i); const y = vertices.getY(i); const baseZ = originalZ[i]; const wave = Math.sin((x + elapsedTime * 1.5) * 0.15) * 0.5 + Math.cos((y + elapsedTime * 1.5) * 0.15) * 0.5 + Math.sin((x + y + elapsedTime * 0.8) * 0.1) * 0.3; vertices.setZ(i, baseZ + wave); }
                 vertices.needsUpdate = true;
             }
-
-            // Stars animation (Unchanged)
-            if (stars) { stars.rotation.y += 0.0001; stars.material.opacity = 0.8 + Math.sin(elapsedTime * 2) * 0.2; }
-
+            if (stars) { stars.rotation.y += 0.0001; stars.material.opacity = 0.8 + Math.sin(elapsedTime * 0.5) * 0.2; }
             renderer.render(scene, camera);
         }
 
         function onWindowResize() {
-            // Resize handling (Unchanged)
             camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }
 
-        // Button click handler (Unchanged)
         document.addEventListener('DOMContentLoaded', () => {
             const flyBtn = document.getElementById('fly-btn');
-            flyBtn.addEventListener('click', () => {
-                isFlying = true; flyStartTime = performance.now();
-                flyBtn.style.opacity = 0; document.getElementById('welcome-title').style.opacity = 0;
-                setTimeout(() => flyBtn.style.display = 'none', 800);
-            });
-            initThreeJS(); // Initialize Three.js after DOM is ready
+            if (flyBtn) {
+                flyBtn.addEventListener('click', () => {
+                    if (!isFlying) {
+                        isFlying = true; flyStartTime = performance.now();
+                        flyBtn.style.transition = 'opacity 0.5s ease-out';
+                        document.getElementById('welcome-title').style.transition = 'opacity 0.5s ease-out';
+                        flyBtn.style.opacity = 0;
+                        document.getElementById('welcome-title').style.opacity = 0;
+                        setTimeout(() => {
+                            if (flyBtn) flyBtn.style.display = 'none';
+                        } , 500);
+                    }
+                });
+            }
+            initThreeJS();
         });
-
     </script>
 </body>
 </html>
