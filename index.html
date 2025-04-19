@@ -59,7 +59,100 @@
         </div>
     </div>
 
+    <!-- Contact Me Floating Button -->
+    <button id="contact-btn" class="fixed z-50 bottom-6 right-6 hidden group">
+        <div class="futuristic-card p-0 m-0 w-16 h-16 flex items-center justify-center shadow-lg transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, #111827 60%, #667eea 100%); border-radius: 1.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z" />
+            </svg>
+        </div>
+        <span class="absolute right-20 bottom-1 bg-[#667eea] text-white px-4 py-1 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity text-sm font-semibold" style="font-family: 'Montserrat', sans-serif;">Contact me</span>
+    </button>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+        <div class="bg-[#111827] rounded-2xl shadow-2xl p-8 w-full max-w-md relative" style="font-family: 'Inter', sans-serif;">
+            <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-4" style="font-family: 'Montserrat', sans-serif;">Contact Me</h2>
+            <form id="contact-form" class="flex flex-col gap-4" action="https://formspree.io/f/xpwpvdln" method="POST">
+                <input type="text" name="name" placeholder="Your Name" required class="rounded-lg px-4 py-2 bg-[#222b3a] text-white focus:outline-none focus:ring-2 focus:ring-[#667eea]">
+                <input type="email" name="email" placeholder="Your Email" required class="rounded-lg px-4 py-2 bg-[#222b3a] text-white focus:outline-none focus:ring-2 focus:ring-[#667eea]">
+                <textarea name="message" placeholder="Your Message" required rows="4" class="rounded-lg px-4 py-2 bg-[#222b3a] text-white focus:outline-none focus:ring-2 focus:ring-[#667eea]"></textarea>
+                <button type="submit" class="futuristic-card bg-[#667eea] text-white font-bold py-2 rounded-lg hover:bg-[#5561c9] transition-colors">Send</button>
+            </form>
+            <div id="contact-success" class="hidden text-green-400 mt-4 text-center">Thank you! Your message has been sent.</div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js" defer></script>
+    <script>
+    // Show/hide contact button only on tiles-section
+    document.addEventListener('DOMContentLoaded', function() {
+        const tilesSection = document.getElementById('tiles-section');
+        const contactBtn = document.getElementById('contact-btn');
+        const mainContent = document.getElementById('main-content');
+        const flyBtn = document.getElementById('fly-btn');
+
+        function showContactBtn() {
+            contactBtn.classList.remove('hidden');
+        }
+        function hideContactBtn() {
+            contactBtn.classList.add('hidden');
+        }
+
+        // Show button when tiles-section is visible (second screen)
+        // If you have logic to show/hide tiles-section, hook here:
+        if (tilesSection && !tilesSection.classList.contains('hidden')) {
+            showContactBtn();
+        }
+        // If you have a button to enter the galaxy, hook to its click
+        if (flyBtn) {
+            flyBtn.addEventListener('click', function() {
+                setTimeout(showContactBtn, 500); // Delay to match screen transition
+            });
+        }
+    });
+
+    // Modal logic
+    const contactBtn = document.getElementById('contact-btn');
+    const contactModal = document.getElementById('contact-modal');
+    const closeModal = document.getElementById('close-modal');
+    const contactForm = document.getElementById('contact-form');
+    const contactSuccess = document.getElementById('contact-success');
+
+    if (contactBtn && contactModal && closeModal) {
+        contactBtn.addEventListener('click', () => {
+            contactModal.classList.remove('hidden');
+        });
+        closeModal.addEventListener('click', () => {
+            contactModal.classList.add('hidden');
+        });
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) contactModal.classList.add('hidden');
+        });
+    }
+
+    // Form submit logic (using Formspree)
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    contactForm.classList.add('hidden');
+                    contactSuccess.classList.remove('hidden');
+                } else {
+                    alert('There was a problem sending your message.');
+                }
+            }).catch(() => {
+                alert('There was a problem sending your message.');
+            });
+        });
+    }
+    </script>
 </body>
 </html>
