@@ -176,7 +176,7 @@ transition: 0.2s linear 0.6s;
   border-radius: 19.2px;
   padding: 0.9rem; /* Keep original padding or adjust slightly if needed */
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.1), 0 4px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px rgba(56, 189, 248, 0.1), 0 4px 6px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -282,6 +282,10 @@ transition: 0.2s linear 0.6s;
    /* Adjust section padding */
    .tiles-section {
        padding: 3rem 1rem; /* Reduced padding */
+       /* Fix: allow vertical scrolling on mobile */
+       overflow-y: auto;
+       overflow-x: hidden;
+       max-height: 100vh;
    }
 }
 
