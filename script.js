@@ -271,7 +271,7 @@ function animate() {
 
     // --- Starfield Animation ---
     if (stars) {
-        stars.rotation.y += 0.0001;
+        stars.rotation.y += 0.001;
         stars.material.opacity = 0.9 + Math.sin(elapsedTime * 0.5) * 0.2;
     }
 
