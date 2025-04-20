@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Projects - Kapisch</title> <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> </head>
+<body class="bg-black fun-projects-page"> <canvas id="bg-canvas"></canvas> <div class="tiles-section active" id="fun-projects-tiles-section"> <h2 class="text-4xl font-bold text-white mb-12" style="font-family: 'Montserrat', sans-serif; opacity: 0; animation: fadeIn 1s 0.5s forwards;">
+             My Fun Projects
+         </h2>
+
+        <div class="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10 w-full max-w-4xl mx-auto px-4">
+            <a href="https://v0-netflix-movie-suggestions.vercel.app/" target="_blank" class="futuristic-card-link" id="fun-tile-1">
+                <div class="futuristic-card">
+                    <div class="futuristic-card-content-placeholder">
+                         <span class="text-3xl font-bold text-white">Netflix Picker</span> </div>
+                </div>
+                <div class="futuristic-card-title">Select genre and get suggestion...</div> </a>
+
+            <a href="https://flappybird-seven.vercel.app/" target="_blank" class="futuristic-card-link" id="fun-tile-2">
+                <div class="futuristic-card">
+                     <div class="futuristic-card-content-placeholder">
+                         <span class="text-3xl font-bold text-white">Flappy Bird 2025</span> </div>
+                 </div>
+                <div class="futuristic-card-title">Not so easy as you think</div> </a>
+
+            <a href="https://trumptarifftracker.vercel.app/" target="_blank" class="futuristic-card-link" id="fun-tile-3">
+                <div class="futuristic-card">
+                    <div class="futuristic-card-content-placeholder">
+                        <span class="text-3xl font-bold text-white">Trump Tariff Tracker</span> </div>
+                </div>
+                <div class="futuristic-card-title">Track the Tariff mess</div> </a>
+
+             </div>
+        <div class="mt-16 text-center" style="opacity: 0; animation: fadeIn 1s 1s forwards;">
+             <a href="index.html" id="back-btn" class="btn-76">
+                 Back to Main
+                 <span class="top"></span>
+                 <span class="right"></span>
+                 <span class="bottom"></span>
+                 <span class="left"></span>
+             </a>
+        </div>
+    </div>
+
+    <div class="content-container hidden" id="main-content"></div>
+     <button id="fly-btn" class="hidden"></button> <div id="tiles-section" class="hidden"></div> <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js" defer></script>
+
+</body>
+</html>

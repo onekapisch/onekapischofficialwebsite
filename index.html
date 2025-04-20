@@ -56,10 +56,17 @@
                  </div>
                 <div class="futuristic-card-title">Tech Deal Pro</div>
             </a>
+
+            <a href="fun-projects.html" class="futuristic-card-link" id="tile-4">
+                <div class="futuristic-card fun-project-card"> <div class="futuristic-card-content-placeholder">
+                         <span class="text-4xl font-bold text-white" style="font-family: 'Montserrat', sans-serif;">Fun Projects</span>
+                     </div>
+                 </div>
+                <div class="futuristic-card-title">Explore More</div>
+            </a>
         </div>
     </div>
 
-    <!-- Contact Me Floating Button -->
     <button id="contact-btn" class="fixed z-50 bottom-6 right-6 hidden group">
         <div class="futuristic-card p-0 m-0 w-16 h-16 flex items-center justify-center shadow-lg transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, #111827 60%, #667eea 100%); border-radius: 1.5rem;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +76,6 @@
         <span class="absolute right-20 bottom-1 bg-[#667eea] text-white px-4 py-1 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity text-sm font-semibold" style="font-family: 'Montserrat', sans-serif;">Contact me</span>
     </button>
 
-    <!-- Contact Modal -->
     <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
         <div class="bg-[#111827] rounded-2xl shadow-2xl p-8 w-full max-w-md relative" style="font-family: 'Inter', sans-serif;">
             <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
@@ -94,65 +100,77 @@
         const mainContent = document.getElementById('main-content');
         const flyBtn = document.getElementById('fly-btn');
 
-        function showContactBtn() {
-            contactBtn.classList.remove('hidden');
-        }
-        function hideContactBtn() {
-            contactBtn.classList.add('hidden');
+        // Function to show button - now checks if tiles are visible
+        function checkAndShowContactBtn() {
+            const tilesSection = document.getElementById('tiles-section');
+            if (tilesSection && tilesSection.classList.contains('active')) {
+                contactBtn.classList.remove('hidden');
+            } else {
+                 contactBtn.classList.add('hidden');
+            }
         }
 
-        // Show button when tiles-section is visible (second screen)
-        // If you have logic to show/hide tiles-section, hook here:
-        if (tilesSection && !tilesSection.classList.contains('hidden')) {
-            showContactBtn();
+        // Initial check might be needed if tiles start visible
+        // checkAndShowContactBtn();
+
+        // Show button when fly animation completes (using hasTransitioned flag from script.js)
+        // We'll rely on script.js to manage this timing more accurately.
+        // The updated script.js will handle showing the button.
+
+
+        // Modal logic (remains the same)
+        const contactModal = document.getElementById('contact-modal');
+        const closeModal = document.getElementById('close-modal');
+        const contactForm = document.getElementById('contact-form');
+        const contactSuccess = document.getElementById('contact-success');
+
+        if (contactBtn && contactModal && closeModal) {
+            contactBtn.addEventListener('click', () => {
+                contactModal.classList.remove('hidden');
+            });
+            closeModal.addEventListener('click', () => {
+                contactModal.classList.add('hidden');
+            });
+            contactModal.addEventListener('click', (e) => {
+                if (e.target === contactModal) contactModal.classList.add('hidden');
+            });
         }
-        // If you have a button to enter the galaxy, hook to its click
-        if (flyBtn) {
-            flyBtn.addEventListener('click', function() {
-                setTimeout(showContactBtn, 500); // Delay to match screen transition
+
+        // Form submit logic (remains the same)
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                fetch(contactForm.action, {
+                    method: 'POST',
+                    body: new FormData(contactForm),
+                    headers: { 'Accept': 'application/json' }
+                }).then(response => {
+                    if (response.ok) {
+                        contactForm.reset(); // Clear the form
+                        contactForm.style.display = 'none'; // Hide form
+                        contactSuccess.classList.remove('hidden'); // Show success
+                        // Optionally hide modal after a delay
+                        setTimeout(() => {
+                            contactModal.classList.add('hidden');
+                            // Reset for next time
+                            contactForm.style.display = 'flex';
+                            contactSuccess.classList.add('hidden');
+                        }, 3000);
+                    } else {
+                         response.json().then(data => {
+                           if (Object.hasOwn(data, 'errors')) {
+                             alert(data["errors"].map(error => error["message"]).join(", "));
+                           } else {
+                             alert('There was a problem sending your message. Please try again.');
+                           }
+                         })
+                    }
+                }).catch(() => {
+                    alert('There was a problem sending your message. Check your connection and try again.');
+                });
             });
         }
     });
-
-    // Modal logic
-    const contactBtn = document.getElementById('contact-btn');
-    const contactModal = document.getElementById('contact-modal');
-    const closeModal = document.getElementById('close-modal');
-    const contactForm = document.getElementById('contact-form');
-    const contactSuccess = document.getElementById('contact-success');
-
-    if (contactBtn && contactModal && closeModal) {
-        contactBtn.addEventListener('click', () => {
-            contactModal.classList.remove('hidden');
-        });
-        closeModal.addEventListener('click', () => {
-            contactModal.classList.add('hidden');
-        });
-        contactModal.addEventListener('click', (e) => {
-            if (e.target === contactModal) contactModal.classList.add('hidden');
-        });
-    }
-
-    // Form submit logic (using Formspree)
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            fetch(contactForm.action, {
-                method: 'POST',
-                body: new FormData(contactForm),
-                headers: { 'Accept': 'application/json' }
-            }).then(response => {
-                if (response.ok) {
-                    contactForm.classList.add('hidden');
-                    contactSuccess.classList.remove('hidden');
-                } else {
-                    alert('There was a problem sending your message.');
-                }
-            }).catch(() => {
-                alert('There was a problem sending your message.');
-            });
-        });
-    }
     </script>
 </body>
 </html>
