@@ -251,28 +251,31 @@ function animate() {
         // --- Transition to Tiles View ---
         if (t_overall >= 1 && !hasTransitioned) {
             hasTransitioned = true; // Mark transition complete
-             // Show the main tiles section
+            // Show the main tiles section
             const tilesSection = document.getElementById('tiles-section');
+            const githubProfile = document.getElementById('github-profile'); // GitHub profile section
             if (tilesSection) {
                 tilesSection.classList.add('active');
-                 // Animate tiles in if not already done
+                // Animate tiles in if not already done
                 if (!tilesAnimated) {
                     animateTilesIn('#tiles-section .futuristic-card-link'); // Target index page tiles
                     tilesAnimated = true;
-                    // Show contact button after tiles animate in
-                    const contactBtn = document.getElementById('contact-btn');
-                    if(contactBtn) {
-                        setTimeout(() => contactBtn.classList.remove('hidden'), 700); // Delay showing button
-                    }
                 }
+                // Show contact button after tiles animate in (ensure it's not hidden)
+                const contactBtn = document.getElementById('contact-btn');
+                if (contactBtn) {
+                    setTimeout(() => contactBtn.classList.remove('hidden'), 700); // Delay showing button
+                }
+            }
+            // Show GitHub profile section
+            if (githubProfile) {
+                githubProfile.classList.add('visible'); // Ensure the visible class is added
             }
         }
     } else if (isFunProjectsPage) {
         // Optional: Add subtle camera movement on fun projects page?
-        // camera.position.x = Math.sin(elapsedTime * 0.1) * 5;
-         camera.lookAt(cameraFunProjectsLook); // Keep looking at the target
+        camera.lookAt(cameraFunProjectsLook); // Keep looking at the target
     }
-
 
     // --- Terrain Wave & Highlighting (Index Page Only, Before Transition) ---
     if (lowPolyMesh && !hasTransitioned) {
