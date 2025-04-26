@@ -24,6 +24,13 @@
         </button>
     </div>
 
+    <!-- GitHub Profile Section -->
+    <div id="github-profile" class="hidden text-center mt-10">
+        <a href="https://www.github.com/onekapisch" target="_blank" rel="noopener noreferrer">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" class="github-logo">
+        </a>
+    </div>
+
     <div class="tiles-section" id="tiles-section">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl mx-auto px-4">
             <a href="https://lifehacksgermany.com" target="_blank" class="futuristic-card-link" id="tile-1">
@@ -39,7 +46,7 @@
             <a href="https://tankalert.de" target="_blank" class="futuristic-card-link" id="tile-2">
                 <div class="futuristic-card">
                     <div class="futuristic-card-image">
-                         <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=928,h=624,fit=crop/AQEpZaobklTjBqqM/tank-alert-YX4apDN7vRT5yp47.png"
+                         <img src="https://imgur.com/a/bW3CIiy"
                               alt="Tank Alert Preview"
                               onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Tank+Alert';">
                     </div>
@@ -64,12 +71,12 @@
                  </div>
                 <div class="futuristic-card-title">Explore More</div>
             </a>
-        </div>
+          
     </div>
 
     <button id="contact-btn" class="fixed z-50 bottom-6 right-6 hidden group">
-        <div class="futuristic-card p-0 m-0 w-16 h-16 flex items-center justify-center shadow-lg transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, #111827 60%, #667eea 100%); border-radius: 1.5rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="futuristic-card flex items-center justify-center w-16 h-16 shadow-lg transition-transform group-hover:scale-105 p-0 m-0" style="background: linear-gradient(135deg, #111827 60%, #667eea 100%); border-radius: 1.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z" />
             </svg>
         </div>
@@ -77,10 +84,10 @@
     </button>
 
     <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
-        <div class="bg-[#111827] rounded-2xl shadow-2xl p-8 w-full max-w-md relative" style="font-family: 'Inter', sans-serif;">
+        <div class="bg-[#111827] rounded-2xl shadow-2xl p-8 w-full max-w-md relative flex flex-col items-center" style="font-family: 'Inter', sans-serif; min-width:320px; max-width:90vw;">
             <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
-            <h2 class="text-2xl font-bold text-white mb-4" style="font-family: 'Montserrat', sans-serif;">Contact Me</h2>
-            <form id="contact-form" class="flex flex-col gap-4" action="https://formspree.io/f/xpwpvdln" method="POST">
+            <h2 class="text-2xl font-bold text-white mb-4 text-center" style="font-family: 'Montserrat', sans-serif;">Contact Me</h2>
+            <form id="contact-form" class="flex flex-col gap-4 w-full" action="https://formspree.io/f/xpwpvdln" method="POST">
                 <input type="text" name="name" placeholder="Your Name" required class="rounded-lg px-4 py-2 bg-[#222b3a] text-white focus:outline-none focus:ring-2 focus:ring-[#667eea]">
                 <input type="email" name="email" placeholder="Your Email" required class="rounded-lg px-4 py-2 bg-[#222b3a] text-white focus:outline-none focus:ring-2 focus:ring-[#667eea]">
                 <textarea name="message" placeholder="Your Message" required rows="4" class="rounded-lg px-4 py-2 bg-[#222b3a] text-white focus:outline-none focus:ring-2 focus:ring-[#667eea]"></textarea>
@@ -93,32 +100,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js" defer></script>
     <script>
-    // Show/hide contact button only on tiles-section
     document.addEventListener('DOMContentLoaded', function() {
         const tilesSection = document.getElementById('tiles-section');
         const contactBtn = document.getElementById('contact-btn');
         const mainContent = document.getElementById('main-content');
         const flyBtn = document.getElementById('fly-btn');
+        const githubProfile = document.getElementById('github-profile');
 
-        // Function to show button - now checks if tiles are visible
-        function checkAndShowContactBtn() {
-            const tilesSection = document.getElementById('tiles-section');
-            if (tilesSection && tilesSection.classList.contains('active')) {
-                contactBtn.classList.remove('hidden');
-            } else {
-                 contactBtn.classList.add('hidden');
-            }
+        // Function to show GitHub profile and tiles section
+        function showSecondPage() {
+            mainContent.classList.add('hidden');
+            tilesSection.classList.add('active');
+            githubProfile.classList.remove('hidden');
         }
 
-        // Initial check might be needed if tiles start visible
-        // checkAndShowContactBtn();
+        // Event listener for "Enter the Galaxy" button
+        if (flyBtn) {
+            flyBtn.addEventListener('click', showSecondPage);
+        }
 
-        // Show button when fly animation completes (using hasTransitioned flag from script.js)
-        // We'll rely on script.js to manage this timing more accurately.
-        // The updated script.js will handle showing the button.
-
-
-        // Modal logic (remains the same)
+        // Modal logic (updated to use 'show' class)
         const contactModal = document.getElementById('contact-modal');
         const closeModal = document.getElementById('close-modal');
         const contactForm = document.getElementById('contact-form');
@@ -126,13 +127,13 @@
 
         if (contactBtn && contactModal && closeModal) {
             contactBtn.addEventListener('click', () => {
-                contactModal.classList.remove('hidden');
+                contactModal.classList.add('show');
             });
             closeModal.addEventListener('click', () => {
-                contactModal.classList.add('hidden');
+                contactModal.classList.remove('show');
             });
             contactModal.addEventListener('click', (e) => {
-                if (e.target === contactModal) contactModal.classList.add('hidden');
+                if (e.target === contactModal) contactModal.classList.remove('show');
             });
         }
 

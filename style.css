@@ -333,7 +333,7 @@ body {
           align-items: center; /* Center cards horizontally */
           justify-content: flex-start;
       }
-      .futuristic-card-image,
+      .fu uristic-card-image,
       .futuristic-card-content-placeholder {
           width: 100%;
           min-width: 0;
@@ -427,4 +427,128 @@ body {
        /* Keep aspect ratio defined earlier or adjust if needed */
        /* aspect-ratio: 4/3; */
     }
+  }
+
+  /* GitHub Profile Section */
+  #github-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      opacity: 0; /* Initially hidden */
+      transform: translateY(-20px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  #github-profile a {
+      display: inline-block;
+      text-decoration: none;
+      /* Remove color/font-size/font-weight to avoid affecting the image */
+  }
+
+  #github-profile .github-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      transition: transform 0.3s ease-out;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+
+  #github-profile a:hover .github-logo {
+      transform: scale(1.12);
+      box-shadow: 0 8px 32px #667eea99;
+      /* Optional: add a subtle glow on hover */
+  }
+
+  #github-profile.visible {
+      opacity: 1;
+      transform: translateY(0);
+  }
+
+  /* --- Contact Button Styles --- */
+  #contact-btn {
+      /* Ensure button is always circular and centered */
+      width: 64px;
+      height: 64px;
+      min-width: 64px;
+      min-height: 64px;
+      border-radius: 1.5rem;
+      padding: 0;
+      margin: 0;
+      box-shadow: 0 4px 24px #667eea55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
+  }
+  #contact-btn .futuristic-card {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      border-radius: 1.5rem;
+      padding: 0;
+      margin: 0;
+      box-shadow: none;
+      background: linear-gradient(135deg, #111827 60%, #667eea 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  #contact-btn svg {
+      width: 40px;
+      height: 40px;
+      display: block;
+      margin: 0 auto;
+      color: #fff;
+      pointer-events: none;
+  }
+  #contact-btn span {
+      /* Tooltip styling */
+      white-space: nowrap;
+      pointer-events: none;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+  }
+  #contact-btn.group:hover {
+      transform: scale(1.07);
+      box-shadow: 0 8px 32px #667eea99;
+  }
+
+  /* --- Contact Modal Centering & Sizing --- */
+  #contact-modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+  }
+
+  #contact-modal.show {
+      display: flex !important; /* Show and center when active */
+  }
+
+  #contact-modal .bg-\[\#111827\] {
+      min-width: 0;
+      max-width: 200px;
+      width: 5px;0%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 2rem 1.5rem 2rem 1.5rem;
+      position: relative;
+  }
+
+  @media (max-width: 600px) {
+      #contact-modal .bg-\[\#111827\] {
+          max-width: 98vw;
+          padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+      }
   }
