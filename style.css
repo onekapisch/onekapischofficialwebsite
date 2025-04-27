@@ -293,129 +293,103 @@ body {
   
   /* General adjustments for smaller screens */
   @media (max-width: 640px) {
-     /* Adjust card link max-width */
-     .futuristic-card-link {
-         max-width: 90%;
-         margin-left: auto; /* Helps center single column items */
-         margin-right: auto;
-         margin-bottom: 1.5rem; /* Slightly reduce bottom margin on mobile */
-     }
-  
-     /* Adjust card padding & border-radius */
-     .futuristic-card {
-         border-radius: 14.4px;
-         padding: 0.6rem;
-     }
-     /* Adjust image container / placeholder */
-     .futuristic-card-image,
-     .futuristic-card-content-placeholder {
-         border-radius: 9.6px;
-         aspect-ratio: 1 / 1; /* Make square on small screens */
-     }
-     /* Adjust title */
-     .futuristic-card-title {
-         font-size: 0.9rem;
-         line-height: 1.3;
-         margin-top: 0.8rem; /* Adjust top margin */
-     }
-      /* Adjust section padding */
-     .tiles-section {
-         padding: 3rem 1rem;
-         align-items: center; /* Center content horizontally */
-         justify-content: flex-start;
-     }
-      /* Adjust fun project text size */
-      .futuristic-card-content-placeholder span {
-          font-size: 1.8rem; /* Smaller text */
-      }
-      .tiles-section .grid,
-      .tiles-section .flex {
-          align-items: center; /* Center cards horizontally */
-          justify-content: flex-start;
-      }
-      .fu uristic-card-image,
-      .futuristic-card-content-placeholder {
-          width: 100%;
-          min-width: 0;
-          min-height: 0;
-          height: auto;
-          max-width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          background-color: #111827;
-          box-sizing: border-box;
-      }
-      .futuristic-card-image img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain; /* Fix cropping: show full image */
-          object-position: center;
-          display: block;
-          background: #111827;
-      }
-      #fun-projects-tiles-section {
-          align-items: center !important;
-          text-align: center;
-      }
-      #fun-projects-tiles-section h2,
-      #fun-projects-tiles-section .section-title,
-      #fun-projects-tiles-section #back-btn {
-          text-align: center;
-          margin-left: auto;
-          margin-right: auto;
-          display: block;
-      }
-      #back-btn {
-          margin-left: auto;
-          margin-right: auto;
-          display: block;
-          float: none;
-      }
+    .futuristic-card-link {
+        max-width: 96vw;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1rem;
+    }
+    .futuristic-card {
+        max-width: 100%;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 0.5rem;
+        border-radius: 12px;
+    }
+    .futuristic-card-image,
+    .futuristic-card-content-placeholder {
+        border-radius: 8px;
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        max-width: 100%;
+    }
+    .tiles-section .grid,
+    .tiles-section .flex {
+        max-width: 100vw;
+        width: 100%;
+        gap: 0.7rem;
+    }
+    .tiles-section {
+        padding: 3rem 1rem;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .tiles-section .grid,
+    .tiles-section .flex {
+        align-items: center;
+        justify-content: flex-start;
+    }
   }
   
-  /* --- Mobile optimization for tiles section and cards --- */
+  /* Make tiles/cards fit better on mobile screens */
   @media (max-width: 640px) {
-      .tiles-section {
-          position: fixed; /* Ensure section fills viewport and is scrollable */
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          min-height: 100vh;
-          max-height: 100vh;
-          overflow-y: auto;
-          overflow-x: hidden;
-          padding: 2.5rem 0.5rem 2rem 0.5rem;
-          box-sizing: border-box;
-          align-items: flex-start; /* Align to top for natural scroll */
-          justify-content: flex-start;
-      }
-      .tiles-section .grid,
-      .tiles-section .flex {
-          width: 100%;
-          max-width: 100vw;
-          flex-direction: column;
-          align-items: center;
-          justify-content: flex-start;
-          gap: 1.2rem;
-          margin: 0 auto;
-      }
-      .futuristic-card-link {
-          max-width: 98vw;
-          width: 100%;
-          margin-left: auto;
-          margin-right: auto;
-          margin-bottom: 1.2rem;
-      }
-      .futuristic-card {
-          min-width: 0;
-          width: 100%;
-          box-sizing: border-box;
-      }
+    .tiles-section {
+        position: fixed; /* Ensure section fills viewport and is scrollable */
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        min-height: 100vh;
+        max-height: 100vh;
+        overflow-y: scroll !important; /* Force vertical scroll */
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 2.5rem 0.5rem 2rem 0.5rem;
+        box-sizing: border-box;
+    }
+    .tiles-section .grid,
+    .tiles-section .flex {
+        width: 100vw;
+        max-width: 100vw;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.7rem;
+        margin: 0 auto;
+        padding: 0;
+    }
+    .futuristic-card-link {
+        max-width: 100vw;
+        width: 100vw;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 0.7rem;
+        padding: 0;
+    }
+    .futuristic-card {
+        width: 100vw;
+        max-width: 100vw;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 0.4rem;
+        border-radius: 10px;
+    }
+    .futuristic-card-image,
+    .futuristic-card-content-placeholder {
+        border-radius: 8px;
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        max-width: 100vw;
+        min-width: 0;
+    }
   }
-  
+
   /* Responsive adjustments for medium screens (Optional: refine card max-width) */
   @media (min-width: 641px) and (max-width: 1024px) {
     .futuristic-card-link {
@@ -464,6 +438,10 @@ body {
   #github-profile.visible {
       opacity: 1;
       transform: translateY(0);
+  }
+
+  .github-link, .github-link * {
+      pointer-events: auto !important;
   }
 
   /* --- Contact Button Styles --- */

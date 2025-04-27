@@ -9,6 +9,20 @@ let tilesAnimated = false; // Flag: ensure tiles animate in only once per page l
 let highlightedVertexIndices = []; // Array to store currently highlighted vertices
 const HIGHLIGHT_RADIUS = 1.5; // Radius for vertex highlighting
 
+let isFlyingToFunProjects = false;
+let flyToFunProjectsStartTime = 0;
+const flyToFunProjectsDuration = 1.5; // seconds
+
+// Add these camera positions for More Projects transition
+const moreProjFlyPos = new THREE.Vector3(0, -5, -150); // Steeper dive forward
+const moreProjFlyLook = new THREE.Vector3(0, -20, -200); // Look down more
+const flyToMoreProjDuration = 2.0; // Faster transition
+
+// Add these camera positions for back transition
+const backTransitionDuration = 2.0;
+let isTransitioningBack = false;
+let backTransitionStartTime = 0;
+
 // --- Camera Positions ---
 const cameraStartPos = new THREE.Vector3(0, 5, 25); // For index page initial view
 const cameraStartLook = new THREE.Vector3(0, 0, 0); // For index page initial view
@@ -62,6 +76,12 @@ function initThreeJS() {
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // Ensure the canvas stays behind content but visible during transitions
+    renderer.domElement.style.position = 'fixed';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.zIndex = '-1';
 
 
     // --- Starfield ---
@@ -269,12 +289,91 @@ function animate() {
             }
             // Show GitHub profile section
             if (githubProfile) {
+                githubProfile.classList.remove('hidden'); // Remove the hidden class
                 githubProfile.classList.add('visible'); // Ensure the visible class is added
             }
         }
+    } else if (isFlyingToFunProjects && !isFunProjectsPage) {
+        // Get the elapsed time for the transition animation
+        let t = (performance.now() - flyToFunProjectsStartTime) / 1000 / flyToMoreProjDuration;
+        t = Math.min(t, 1);
+        
+        // Use easing for smoother animation
+        let tEased = easeInOutCubic(t);
+
+        // Enhanced star field effects during transition
+        if (stars) {
+            // Make stars move faster during transition
+            stars.rotation.y += 0.003;
+            // Intensify star brightness during transition
+            stars.material.opacity = 0.9 + Math.sin(elapsedTime * 0.8) * 0.5;
+            // Add a slight "falling" effect to stars
+            stars.position.y -= 0.15;
+        }
+
+        // Smooth forward dive animation for camera
+        camera.position.lerp(moreProjFlyPos, 0.05);
+        currentLookAt.lerp(moreProjFlyLook, 0.05);
+        camera.lookAt(currentLookAt);
+        
+        // Hide page content gradually but keep starfield visible
+        const contentElements = document.querySelectorAll('.futuristic-card-link, #contact-btn, #github-profile, .section-title');
+        if (t > 0.4) {
+            contentElements.forEach(el => {
+                if (el) el.style.opacity = Math.max(0, 1 - ((t - 0.4) / 0.4));
+            });
+        }
+
+        // Only fade screen to black at the very end, AFTER animation completes
+        if (t > 0.9) {
+            // Create or get overlay element for smooth fade
+            let overlay = document.getElementById('page-transition-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'page-transition-overlay';
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = '#000';
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.2s ease-in';
+                overlay.style.zIndex = '1000';
+                document.body.appendChild(overlay);
+            }
+            
+            // Fade to black at the very end
+            overlay.style.opacity = (t - 0.9) / 0.1;
+            
+            // Navigate at the very end
+            if (t >= 1) {
+                window.location.href = "fun-projects.html";
+            }
+        }
+    } else if (isFunProjectsPage && isTransitioningBack) {
+        let t = (performance.now() - backTransitionStartTime) / 1000 / backTransitionDuration;
+        t = Math.min(t, 1);
+
+        // Reverse the camera movement
+        camera.position.lerp(new THREE.Vector3(0, -25, -100), 0.05);
+        currentLookAt.lerp(new THREE.Vector3(0, -10, -100), 0.05);
+        camera.lookAt(currentLookAt);
+
+        // Fade out near the end
+        if (t > 0.7) {
+            document.body.style.opacity = 1 - ((t - 0.7) / 0.3);
+        }
+
+        if (t >= 1) {
+            window.location.href = "index.html#tiles";
+        }
     } else if (isFunProjectsPage) {
-        // Optional: Add subtle camera movement on fun projects page?
         camera.lookAt(cameraFunProjectsLook); // Keep looking at the target
+        
+        // Add subtle movement on fun projects page for more interest
+        camera.position.y += Math.sin(elapsedTime * 0.5) * 0.02;
+        camera.position.x += Math.sin(elapsedTime * 0.3) * 0.01;
     }
 
     // --- Terrain Wave & Highlighting (Index Page Only, Before Transition) ---
@@ -308,7 +407,7 @@ function animate() {
     }
 
     // --- Starfield Animation (Runs on both pages) ---
-    if (stars) {
+    if (stars && !isFlyingToFunProjects) { // Normal star animation when not in transition
         stars.rotation.y += 0.001; // Slower rotation
         stars.material.opacity = 0.9 + Math.sin(elapsedTime * 0.3) * 0.3; // Smoother opacity pulse
     }
@@ -327,6 +426,33 @@ function onWindowResize() {
 
 // --- DOM Ready ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Add styles for the transition overlay
+    const style = document.createElement('style');
+    style.textContent = `
+        #page-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        /* Make sure the GitHub profile is visible and clickable */
+        #github-profile {
+            position: relative;
+            z-index: 100;
+        }
+        .github-logo {
+            cursor: pointer;
+        }
+    `;
+    document.head.appendChild(style);
+
     // Initialize Three.js (which now handles page-specific setup)
     initThreeJS();
 
@@ -352,6 +478,44 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             console.error("Required elements (fly-btn, welcome-title, main-content) not found on index page!");
+        }
+
+        // --- Seamless transition for "More Projects" tile ---
+        const moreProjectsTile = document.getElementById('tile-4');
+        if (moreProjectsTile) {
+            moreProjectsTile.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!isFlyingToFunProjects) {
+                    isFlyingToFunProjects = true;
+                    flyToFunProjectsStartTime = performance.now();
+                    
+                    // Create the overlay for smooth transition if it doesn't exist
+                    if (!document.getElementById('page-transition-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.id = 'page-transition-overlay';
+                        document.body.appendChild(overlay);
+                    }
+                    
+                    // Start from current camera position
+                    currentLookAt = camera.getWorldDirection(new THREE.Vector3());
+                    
+                    // Make sure the canvas is visible during transition
+                    const canvas = document.getElementById('bg-canvas');
+                    if (canvas) {
+                        canvas.style.zIndex = '-1';
+                        canvas.style.opacity = '1';
+                    }
+                }
+            });
+        }
+        
+        // Fix for GitHub icon - make sure it's visible and clickable
+        const githubLogo = document.querySelector('.github-logo');
+        if (githubLogo) {
+            githubLogo.style.cursor = 'pointer';
+            githubLogo.addEventListener('click', function() {
+                window.open('https://www.github.com/onekapisch', '_blank');
+            });
         }
     }
 
@@ -384,4 +548,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Add back button handler
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn && isFunProjectsPage) {
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!isTransitioningBack) {
+                isTransitioningBack = true;
+                backTransitionStartTime = performance.now();
+                currentLookAt = camera.getWorldDirection(new THREE.Vector3());
+            }
+        });
+    }
 });

@@ -25,18 +25,16 @@
     </div>
 
     <!-- GitHub Profile Section -->
-    <div id="github-profile" class="hidden text-center mt-10">
-        <a href="https://www.github.com/onekapisch" target="_blank" rel="noopener noreferrer">
-            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" class="github-logo">
-        </a>
-    </div>
+    <div id="github-profile" style="position: relative; z-index: 1000; cursor: pointer; text-align: center; margin-top: 40px;">
+        <img src="Image Assets/Github.png" alt="GitHub Logo" class="github-logo" onclick="window.open('https://www.github.com/onekapisch', '_blank')">
+      </div>
 
     <div class="tiles-section" id="tiles-section">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl mx-auto px-4">
             <a href="https://lifehacksgermany.com" target="_blank" class="futuristic-card-link" id="tile-1">
                 <div class="futuristic-card">
                     <div class="futuristic-card-image">
-                        <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=920,h=872,fit=crop/AQEpZaobklTjBqqM/wepik-untitled-project-20240812142105urxy-Yley4gewJlH0byN9.png"
+                        <img src="Image Assets/Lifehacksgermany.png"
                              alt="Life Hacks Germany Preview"
                              onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Life+Hacks+DE';">
                     </div>
@@ -46,7 +44,7 @@
             <a href="https://tankalert.de" target="_blank" class="futuristic-card-link" id="tile-2">
                 <div class="futuristic-card">
                     <div class="futuristic-card-image">
-                         <img src="https://imgur.com/a/bW3CIiy"
+                         <img src="Image Assets/Tankalert.png"
                               alt="Tank Alert Preview"
                               onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Tank+Alert';">
                     </div>
@@ -56,7 +54,7 @@
             <a href="https://techdealpro.com" target="_blank" class="futuristic-card-link" id="tile-3">
                 <div class="futuristic-card">
                      <div class="futuristic-card-image">
-                         <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=910,h=412,fit=crop/AQEpZaobklTjBqqM/tech-deal-pro-1-dWxbL39q8ZUarER5.png"
+                         <img src="Image Assets/techdealpro.png"
                               alt="Tech Deal Pro Preview"
                               onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=TechDealPro';">
                      </div>
@@ -66,7 +64,7 @@
 
             <a href="fun-projects.html" class="futuristic-card-link" id="tile-4">
                 <div class="futuristic-card fun-project-card"> <div class="futuristic-card-content-placeholder">
-                         <span class="text-4xl font-bold text-white" style="font-family: 'Montserrat', sans-serif;">Fun Projects</span>
+                         <span class="text-4xl font-bold text-white" style="font-family: 'Montserrat', sans-serif;">More Projects</span>
                      </div>
                  </div>
                 <div class="futuristic-card-title">Explore More</div>
@@ -111,12 +109,25 @@
         function showSecondPage() {
             mainContent.classList.add('hidden');
             tilesSection.classList.add('active');
-            githubProfile.classList.remove('hidden');
+            githubProfile.style.display = 'flex'; // <-- Ensure visible and clickable
         }
 
         // Event listener for "Enter the Galaxy" button
         if (flyBtn) {
             flyBtn.addEventListener('click', showSecondPage);
+        }
+
+        // Seamless transition for "More Projects" tile
+        const moreProjectsTile = document.getElementById('tile-4');
+        if (moreProjectsTile) {
+            moreProjectsTile.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.body.style.transition = 'opacity 0.5s ease-out';
+                document.body.style.opacity = 0;
+                setTimeout(() => {
+                    window.location.href = moreProjectsTile.href;
+                }, 500);
+            });
         }
 
         // Modal logic (updated to use 'show' class)
