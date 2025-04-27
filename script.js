@@ -456,6 +456,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Three.js (which now handles page-specific setup)
     initThreeJS();
 
+    // --- Fix: Only trigger "Enter the Galaxy" on button click, not anywhere else ---
+    if (!isFunProjectsPage) {
+        const flyBtn = document.getElementById('fly-btn');
+        const mainContent = document.getElementById('main-content');
+        if (flyBtn && mainContent) {
+            flyBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent bubbling
+                if (!isFlying) {
+                    isFlying = true;
+                    flyStartTime = performance.now();
+                    mainContent.style.transition = 'opacity 0.5s ease-out';
+                    mainContent.style.opacity = 0;
+                    setTimeout(() => {
+                        mainContent.style.display = 'none';
+                    }, 500);
+                }
+            });
+        }
+    }
+
     // --- Event Listeners (Only add for index page elements) ---
     if (!isFunProjectsPage) {
         const flyBtn = document.getElementById('fly-btn');
