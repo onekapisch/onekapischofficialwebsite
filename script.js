@@ -581,3 +581,95 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Space transition animation
+function playSpaceTransitionAnimation(callback) {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) {
+        callback();
+        return;
+    }
+    const ctx = canvas.getContext('2d');
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+
+    // Generate stars
+    const stars = [];
+    for (let i = 0; i < 200; i++) {
+        stars.push({
+            x: Math.random() * w - w / 2,
+            y: Math.random() * h - h / 2,
+            z: Math.random() * w,
+            o: Math.random() * 0.5 + 0.5
+        });
+    }
+
+    let frame = 0;
+    const maxFrames = 36; // ~0.6s at 60fps
+
+    function animate() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, w, h);
+
+        for (let i = 0; i < stars.length; i++) {
+            let star = stars[i];
+            // Move star forward (simulate flying)
+            star.z -= w / maxFrames;
+            if (star.z <= 0) {
+                star.x = Math.random() * w - w / 2;
+                star.y = Math.random() * h - h / 2;
+                star.z = w;
+            }
+            // Project 3D to 2D
+            let k = 128.0 / star.z;
+            let sx = star.x * k + w / 2;
+            let sy = star.y * k + h / 2;
+            if (sx < 0 || sx >= w || sy < 0 || sy >= h) continue;
+            let size = (1 - star.z / w) * 3 + 1;
+            ctx.beginPath();
+            ctx.arc(sx, sy, size, 0, 2 * Math.PI);
+            ctx.fillStyle = `rgba(255,255,255,${star.o})`;
+            ctx.fill();
+        }
+
+        frame++;
+        if (frame < maxFrames) {
+            requestAnimationFrame(animate);
+        } else {
+            callback();
+        }
+    }
+    animate();
+}
+
+// Helper to fade out body and play animation
+function transitionWithSpaceAnimation(targetHref) {
+    document.body.classList.add('body-fade-out', 'hide-scrollbar');
+    playSpaceTransitionAnimation(() => {
+        window.location.href = targetHref;
+    });
+}
+
+// Attach event listeners after DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+    // Fun Projects link (on landing page)
+    const funProjectsLink = document.getElementById('fun-projects-link');
+    if (funProjectsLink) {
+        funProjectsLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            transitionWithSpaceAnimation(this.href);
+        });
+    }
+
+    // Back to Home button (on fun-projects page)
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) {
+        backBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            transitionWithSpaceAnimation(this.href);
+        });
+    }
+});
