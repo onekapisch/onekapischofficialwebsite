@@ -13,7 +13,9 @@
     <canvas id="bg-canvas"></canvas>
 
     <div class="content-container" id="main-content">
-        <h1 id="welcome-title" class="text-5xl sm:text-5xl md:text-6xl font-black text-white tracking-wider leading-tight" style="font-family: 'Montserrat', sans-serif;">
+        <div id="container" style="pointer-events: none; z-index: 0;"></div>
+        <div class="glow" style="pointer-events: none; z-index: 0;"></div>
+        <h1 id="welcome-title" class="text-5xl sm:text-5xl md:text-6xl font-black text-white tracking-wider leading-tight" style="font-family: 'Montserrat', sans-serif; position: relative; z-index: 2;">
             Kapisch
         </h1>
         <button id="fly-btn" class="btn-76 mt-10">
