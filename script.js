@@ -223,16 +223,10 @@ function animateTilesIn(selector) {
     const tiles = document.querySelectorAll(selector);
     tiles.forEach((tile, i) => {
         if (tile) {
-             // Reset any previous transition delays immediately
-             tile.style.transitionDelay = '0s';
-             // Remove and re-add class slightly later to re-trigger animation if needed
-            tile.classList.remove('visible');
-
-            // Apply new delay and trigger visibility
-             setTimeout(() => {
-                 tile.style.transitionDelay = (i * 0.09) + 's'; // Staggered delay
-                 tile.classList.add('visible');
-             }, 50); // Small delay before starting animation sequence
+            // Instead, just add the visible class with a staggered delay (no forced style reset):
+            setTimeout(() => {
+                tile.classList.add('visible');
+            }, i * 90); // 90ms stagger, no forced style reset
         }
     });
 }
