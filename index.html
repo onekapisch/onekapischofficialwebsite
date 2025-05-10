@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:; object-src 'none'; frame-ancestors 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kapisch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href=https://img.icons8.com/?size=100&id=111032&format=png&color=000000">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=111032&format=png&color=000000">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-black">
@@ -29,12 +33,14 @@
 
     <!-- GitHub Profile Section -->
     <div id="github-profile" style="position: relative; z-index: 1000; cursor: pointer; text-align: center; margin-top: 40px;">
-        <img src="new-folder/Github.png" alt="GitHub Logo" class="github-logo" onclick="window.open('https://www.github.com/onekapisch', '_blank')">
-      </div>
+        <a href="https://www.github.com/onekapisch" target="_blank" rel="noopener noreferrer">
+            <img src="new-folder/Github.png" alt="GitHub Logo" class="github-logo">
+        </a>
+    </div>
 
     <div class="tiles-section" id="tiles-section">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl mx-auto">
-            <a href="https://lifehacksgermany.com" target="_blank" class="futuristic-card-link" id="tile-1">
+            <a href="https://lifehacksgermany.com" target="_blank" class="futuristic-card-link" id="tile-1" rel="noopener noreferrer">
                 <div class="futuristic-card">
                     <div class="futuristic-card-image">
                         <img src="new-folder/Lifehacksgermany.png"
@@ -44,7 +50,7 @@
                 </div>
                 <div class="futuristic-card-title">Life Hacks Germany</div>
             </a>
-            <a href="https://tankalert.de" target="_blank" class="futuristic-card-link" id="tile-2">
+            <a href="https://tankalert.de" target="_blank" class="futuristic-card-link" id="tile-2" rel="noopener noreferrer">
                 <div class="futuristic-card">
                     <div class="futuristic-card-image">
                          <img src="new-folder/Tankalert.png"
@@ -54,7 +60,7 @@
                 </div>
                  <div class="futuristic-card-title">Launching soon...</div>
             </a>
-            <a href="https://techdealpro.com" target="_blank" class="futuristic-card-link" id="tile-3">
+            <a href="https://techdealpro.com" target="_blank" class="futuristic-card-link" id="tile-3" rel="noopener noreferrer">
                 <div class="futuristic-card">
                      <div class="futuristic-card-image">
                          <img src="new-folder/techdealpro.png"
