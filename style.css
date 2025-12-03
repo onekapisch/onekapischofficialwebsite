@@ -183,12 +183,12 @@ body {
   /* Styles like display, justify-content, grid-cols are best handled by Tailwind classes */
   /* in the HTML for responsiveness (e.g., flex flex-wrap justify-center or grid grid-cols-*) */
   /* This CSS rule primarily ensures consistent base width/max-width */
-  .tiles-section .grid, /* Maintain selector for potential shared styles */
-  .tiles-section .flex { /* Add selector if using flex */
-    gap: 2rem; /* Fallback/base gap (Tailwind gap-* overrides) */
+.tiles-section .grid, /* Maintain selector for potential shared styles */
+.tiles-section .flex { /* Add selector if using flex */
+    gap: 2.6rem; /* Fallback/base gap (Tailwind gap-* overrides) */
     width: 100%;
     max-width: 1200px; /* Default max width for index page */
-  }
+}
   
   /* Specific max-width for fun projects page */
   #fun-projects-tiles-section .grid,
@@ -216,118 +216,179 @@ body {
   }
   
   
-  /* === START: Futuristic Acrylic Tile Styles === */
-  
-  /* Link container */
-  .futuristic-card-link {
-    display: block; /* Needed for margin */
+/* === START: Luxury Liquid Glass Tile Styles === */
+:root {
+  --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  --glass-border: rgba(255,255,255,0.14);
+  --glass-highlight: rgba(56,189,248,0.55);
+  --glass-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 10px 30px rgba(56,189,248,0.12);
+}
+
+/* Link container */
+.futuristic-card-link {
+    display: block;
     text-decoration: none;
     color: inherit;
-    width: 100%; /* Take up grid/flex item width */
-    max-width: 350px; /* Max card width */
-    opacity: 0; /* Hidden for animation */
-    transform: translateY(100px) scale(0.9);
+    width: 100%;
+    max-width: 360px;
+    opacity: 0;
+    transform: translateY(70px) scale(0.96);
     will-change: transform, opacity;
     transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
                 opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  
-    /* >>> ADDED: Vertical margin between card links <<< */
-    margin-bottom: 2rem; /* Creates space below each card+title combo */
-  }
-  
-  /* Make card visible (triggered by JS) */
-  .futuristic-card-link.visible {
+    margin-bottom: 2.6rem;
+}
+
+.futuristic-card-link.visible {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-  
-  /* The card itself */
-  .futuristic-card {
+}
+
+.futuristic-card {
     position: relative;
-    background-color: rgba(25, 35, 55, 0.5);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 19.2px;
-    padding: 0.9rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    padding: 1rem;
     overflow: hidden;
-    box-shadow: 0 0 5px rgba(56, 189, 248, 0.1), 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    height: 100%; /* Fill the link container height */
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    height: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-  }
-  
-  /* Hover effect for the card */
-  .futuristic-card-link:hover .futuristic-card {
-    transform: translateY(-8px);
-    background-color: rgba(35, 45, 65, 0.65);
-    border-color: rgba(56, 189, 248, 0.7);
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.3), 0 10px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Image container within the card */
-  .futuristic-card-image {
+    isolation: isolate;
+}
+
+.futuristic-card::before {
+    content: "";
+    position: absolute;
+    inset: -40% 8%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.14), transparent 45%),
+                radial-gradient(circle at 80% 0%, rgba(56,189,248,0.16), transparent 45%);
+    filter: blur(26px);
+    opacity: 0.35;
+    transform: rotate(8deg) scale(1.1);
+    transition: opacity 0.6s ease, transform 0.8s ease;
+    z-index: 0;
+}
+
+.futuristic-card::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(120deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+}
+
+.futuristic-card-link:hover .futuristic-card {
+    transform: translateY(-10px) scale(1.01);
+    border-color: var(--glass-highlight);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.65), 0 16px 40px rgba(56,189,248,0.2);
+    background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(15,23,42,0.55));
+}
+
+.futuristic-card-link:hover .futuristic-card::before {
+    opacity: 0.6;
+    transform: rotate(4deg) scale(1.2);
+}
+
+.futuristic-card-link:hover .futuristic-card::after {
+    opacity: 0.6;
+}
+
+.futuristic-card-image,
+.futuristic-card-content-placeholder {
+    position: relative;
     width: 100%;
     aspect-ratio: 16 / 10;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    background-color: #111827;
+    background: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.2), rgba(15,23,42,0.9));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-  }
-  
-  /* Image styling */
-  .futuristic-card-image img {
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+.futuristic-card-image::after,
+.futuristic-card-content-placeholder::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 40%);
+    opacity: 0.18;
+    pointer-events: none;
+}
+
+.futuristic-card-image img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease-out;
-    background: #111827;
-  }
-  
-  /* Image zoom on hover */
-  .futuristic-card-link:hover .futuristic-card-image img {
-    transform: scale(1.05);
-  }
-  
-  /* Placeholder for content (like big text) in Fun Project cards */
-  .futuristic-card-content-placeholder {
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      border-radius: 12px;
-      background-color: #111827;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 1rem;
-      flex-shrink: 0;
-      box-sizing: border-box;
-  }
-  
-  /* Title styling */
-  .futuristic-card-title {
+    transition: transform 0.4s ease;
+    background: transparent;
+}
+
+.futuristic-card-link:hover .futuristic-card-image img {
+    transform: scale(1.06);
+}
+
+.futuristic-card-title {
     text-align: center;
     color: #e5e7eb;
-    margin-top: 1rem; /* >>> ENSURED: Space between card and title <<< */
-    font-size: 1.0rem;
-    line-height: 1.4;
-    font-weight: 600;
+    margin-top: 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    font-weight: 700;
     padding: 0 0.2rem;
     transition: color 0.3s ease-out;
     flex-grow: 1;
-    padding-bottom: 0.5rem; /* Add slight padding below title */
-  }
-  
-  /* Title color change on hover */
-  .futuristic-card-link:hover .futuristic-card-title {
-     color: #f9fafb;
-  }
+    padding-bottom: 0.5rem;
+    letter-spacing: 0.01em;
+}
+
+.futuristic-card-link:hover .futuristic-card-title {
+   color: #f8fafc;
+}
+
+.placeholder-gradient {
+    background: radial-gradient(circle at 25% 25%, rgba(94,234,212,0.25), rgba(14,165,233,0.35), rgba(15,23,42,0.95));
+    color: #e0f2fe;
+}
+
+.placeholder-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.placeholder-card {
+    cursor: pointer;
+}
+
+.fun-project-card .futuristic-card-content-placeholder {
+    background: radial-gradient(circle at 15% 20%, rgba(94,234,212,0.18), rgba(56,189,248,0.32), rgba(15,23,42,0.92));
+}
+
+#back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.6rem;
+    border-radius: 1.6rem;
+    position: relative;
+    z-index: 20;
+}
   
   /* === Responsive Adjustments === */
   
@@ -744,24 +805,24 @@ body {
   }
 
   /* --- Contact Modal Centering & Sizing --- */
-  #contact-modal {
-      display: none; /* Hidden by default */
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,0.6);
-      align-items: center;
-      justify-content: center;
-  }
+#contact-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+}
 
-  #contact-modal.show {
-      display: flex !important; /* Show and center when active */
-  }
+#contact-modal.show {
+    display: flex !important; /* Show and center when active */
+}
 
   #contact-modal .bg-\[\#111827\] {
       min-width: 0;
-      max-width: 200px;
-      width: 5px;0%;
+      max-width: 400px;
+      width: 100%;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;

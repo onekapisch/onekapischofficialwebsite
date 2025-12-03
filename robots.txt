@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Allow all search engines to crawl the entire site
+Disallow:
+
+# Sitemap location (update when you create one)
+# Sitemap: https://onekapisch.github.io/onekapischofficialwebsite/sitemap.xml
+
+# Crawl-delay: 1

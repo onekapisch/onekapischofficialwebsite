@@ -1,6 +1,22 @@
 // --- Global Variables ---
 let scene, camera, renderer, lowPolyMesh, stars, raycaster, mouse;
 let clock = new THREE.Clock();
+
+// --- Security: Input Sanitization Function ---
+function sanitizeText(text) {
+    if (typeof text !== 'string') return '';
+    // Remove potentially harmful characters and HTML tags
+    return text.replace(/[<>"'&]/g, function(match) {
+        const escapeChars = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#x27;',
+            '&': '&amp;'
+        };
+        return escapeChars[match];
+    }).substring(0, 500); // Limit length to prevent DoS
+}
 let isFlying = false; // Flag for camera animation state (index page only)
 let flyStartTime = 0;
 const flyDuration = 5.0;
@@ -105,7 +121,7 @@ function initThreeJS() {
         sizeAttenuation: true,
         transparent: true,
         opacity: 2.8,
-        map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png'), // Ensure this path is valid or replace
+        map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png'),
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
@@ -444,11 +460,102 @@ document.addEventListener('DOMContentLoaded', () => {
         .github-logo {
             cursor: pointer;
         }
+
+        /* Drag & drop helpers */
+        .tile-dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+        .tile-drop-target {
+            outline: 2px dashed rgba(56,189,248,0.8);
+            outline-offset: 6px;
+        }
     `;
     document.head.appendChild(style);
 
     // Initialize Three.js (which now handles page-specific setup)
     initThreeJS();
+
+    // --- Contact modal logic (runs on any page where elements exist) ---
+    const sanitizeText = (text) => {
+        if (typeof text !== 'string') return '';
+        return text.replace(/[<>"'&]/g, (match) => {
+            const escapeChars = { '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '&': '&amp;' };
+            return escapeChars[match];
+        }).substring(0, 500);
+    };
+
+    const contactBtn = document.getElementById('contact-btn');
+    const contactModal = document.getElementById('contact-modal');
+    const closeModal = document.getElementById('close-modal');
+    const contactForm = document.getElementById('contact-form');
+    const contactSuccess = document.getElementById('contact-success');
+
+    if (contactBtn) contactBtn.classList.remove('hidden');
+
+    if (contactBtn && contactModal && closeModal) {
+        const openModal = (e) => {
+            if (e) e.preventDefault();
+            contactModal.classList.remove('hidden');
+            contactModal.classList.add('show');
+        };
+        const closeModalFn = (e) => {
+            if (e) e.preventDefault();
+            contactModal.classList.remove('show');
+            contactModal.classList.add('hidden');
+        };
+        contactBtn.addEventListener('click', openModal);
+        closeModal.addEventListener('click', closeModalFn);
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModalFn(e);
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && contactModal.classList.contains('show')) {
+                closeModalFn();
+            }
+        });
+        // Expose helpers for quick debugging
+        window.__openContactModal = openModal;
+        window.__closeContactModal = closeModalFn;
+    }
+
+    if (contactForm && contactModal && contactSuccess) {
+        contactForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    contactForm.reset();
+                    contactForm.style.display = 'none';
+                    contactSuccess.classList.remove('hidden');
+                    setTimeout(() => {
+                        contactModal.classList.remove('show');
+                        contactModal.classList.add('hidden');
+                        contactForm.style.display = 'flex';
+                        contactSuccess.classList.add('hidden');
+                    }, 3000);
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            const sanitizedErrors = data["errors"]
+                                .map(error => sanitizeText(error["message"] || 'Unknown error'))
+                                .join(", ");
+                            alert(sanitizedErrors || 'There was a problem sending your message. Please try again.');
+                        } else {
+                            alert('There was a problem sending your message. Please try again.');
+                        }
+                    }).catch(() => {
+                        alert('There was a problem sending your message. Please try again.');
+                    });
+                }
+            }).catch(() => {
+                alert('There was a problem sending your message. Check your connection and try again.');
+            });
+        });
+    }
 
     // --- Fix: Only trigger "Enter the Galaxy" on button click, not anywhere else ---
     if (!isFunProjectsPage) {
@@ -532,6 +639,101 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // --- Drag & Drop ordering for tiles (persisted in localStorage) ---
+    function setupDragAndDrop(containerSelector, storageKey) {
+        const container = document.querySelector(containerSelector);
+        if (!container) return;
+
+        const tiles = Array.from(container.querySelectorAll('.futuristic-card-link'));
+        tiles.forEach((tile, idx) => {
+            tile.dataset.tileId = tile.dataset.tileId || tile.id || `${storageKey}-tile-${idx}`;
+            tile.setAttribute('draggable', 'true');
+        });
+
+        // Apply saved order if present
+        try {
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            if (Array.isArray(saved) && saved.length) {
+                saved.forEach(id => {
+                    const match = tiles.find(t => t.dataset.tileId === id);
+                    if (match) container.appendChild(match);
+                });
+            }
+        } catch (err) {
+            console.warn('Tile order load failed', err);
+        }
+
+        let dragging = null;
+        let dragMoved = false;
+
+        const persistOrder = () => {
+            const order = Array.from(container.querySelectorAll('.futuristic-card-link')).map(t => t.dataset.tileId);
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(order));
+            } catch (err) {
+                console.warn('Tile order save failed', err);
+            }
+        };
+
+        const getDragAfterElement = (y) => {
+            const siblings = [...container.querySelectorAll('.futuristic-card-link:not(.tile-dragging)')];
+            let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+            siblings.forEach(child => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    closest = { offset, element: child };
+                }
+            });
+            return closest.element;
+        };
+
+        tiles.forEach(tile => {
+            tile.addEventListener('dragstart', (e) => {
+                dragging = tile;
+                dragMoved = false;
+                tile.classList.add('tile-dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            tile.addEventListener('dragend', () => {
+                if (dragging) {
+                    dragging.classList.remove('tile-dragging');
+                    dragging = null;
+                }
+                container.querySelectorAll('.tile-drop-target').forEach(el => el.classList.remove('tile-drop-target'));
+                if (dragMoved) {
+                    persistOrder();
+                    tile.dataset.dragJustEnded = 'true';
+                    setTimeout(() => { tile.dataset.dragJustEnded = 'false'; }, 50);
+                }
+            });
+
+            tile.addEventListener('click', (e) => {
+                if (tile.dataset.dragJustEnded === 'true') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        container.addEventListener('dragover', (e) => {
+            if (!dragging) return;
+            e.preventDefault();
+            const afterElement = getDragAfterElement(e.clientY);
+            container.querySelectorAll('.tile-drop-target').forEach(el => el.classList.remove('tile-drop-target'));
+            if (afterElement == null) {
+                container.appendChild(dragging);
+            } else {
+                container.insertBefore(dragging, afterElement);
+                afterElement.classList.add('tile-drop-target');
+            }
+            dragMoved = true;
+        });
+    }
+
+    setupDragAndDrop('#tiles-section .grid', 'index-tiles-order');
+    setupDragAndDrop('#fun-projects-tiles-section .flex', 'fun-tiles-order');
 
     // --- Page Transition Handling (Optional: Fade out before leaving) ---
     // This provides a smoother visual transition when clicking links

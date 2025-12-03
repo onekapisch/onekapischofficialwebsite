@@ -7,7 +7,32 @@
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kapisch</title>
+    
+    <!-- SEO and Professional Meta Tags -->
+    <title>Kapisch - Portfolio | Web Developer & Creative Projects</title>
+    <meta name="description" content="Welcome to Kapisch's portfolio - showcasing innovative web applications, creative projects, and cutting-edge development work. Explore my latest projects including Life Hacks Germany, Tank Alert, and more.">
+    <meta name="keywords" content="web developer, portfolio, javascript, react, web applications, creative projects, full stack developer">
+    <meta name="author" content="Kapisch">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onekapisch.github.io/onekapischofficialwebsite/">
+    <meta property="og:title" content="Kapisch - Portfolio | Web Developer & Creative Projects">
+    <meta property="og:description" content="Welcome to Kapisch's portfolio - showcasing innovative web applications and creative projects.">
+    <meta property="og:image" content="https://onekapisch.github.io/onekapischofficialwebsite/new-folder/Githubprofile.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://onekapisch.github.io/onekapischofficialwebsite/">
+    <meta property="twitter:title" content="Kapisch - Portfolio | Web Developer & Creative Projects">
+    <meta property="twitter:description" content="Welcome to Kapisch's portfolio - showcasing innovative web applications and creative projects.">
+    <meta property="twitter:image" content="https://onekapisch.github.io/onekapischofficialwebsite/new-folder/Githubprofile.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://onekapisch.github.io/onekapischofficialwebsite/">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#000000">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="https://img.icons8.com/?size=100&id=111032&format=png&color=000000">
@@ -43,7 +68,7 @@
     </div>
 
     <div class="tiles-section" id="tiles-section">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 w-full max-w-6xl mx-auto">
             <a href="https://lifehacksgermany.com" target="_blank" class="futuristic-card-link" id="tile-1" rel="noopener noreferrer">
                 <div class="futuristic-card">
                     <div class="futuristic-card-image">
@@ -59,7 +84,7 @@
                     <div class="futuristic-card-image">
                          <img src="new-folder/Tankalert.png"
                               alt="Tank Alert Preview"
-                              onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Tank+Alert';">
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/111827/667eea?text=Tank+Alert';">
                     </div>
                 </div>
                  <div class="futuristic-card-title">Find Best Fuel Prices in Germany! Set Price alarms, Fuel tips and much more.</div>
@@ -75,17 +100,38 @@
                 <div class="futuristic-card-title">Adidab</div>
             </a>
 
-            <a href="fun-projects.html" id="fun-projects-link" class="futuristic-card-link">
-                <div class="futuristic-card fun-project-card"> <div class="futuristic-card-content-placeholder">
-                         <span class="text-4xl font-bold text-white" style="font-family: 'Montserrat', sans-serif;">More Projects</span>
-                     </div>
-                 </div>
+            <a href="javascript:void(0)" class="futuristic-card-link placeholder-card" aria-disabled="true">
+                <div class="futuristic-card">
+                    <div class="futuristic-card-image placeholder-gradient">
+                        <span class="placeholder-label">Your Next Idea</span>
+                    </div>
+                </div>
+                <div class="futuristic-card-title">Custom tile ready for your next project.</div>
+            </a>
+
+            <a href="fun-projects.html" id="tile-4" class="futuristic-card-link fun-project-card">
+                <div class="futuristic-card fun-project-card">
+                    <div class="futuristic-card-content-placeholder">
+                        <span class="text-4xl font-bold text-white" style="font-family: 'Montserrat', sans-serif;">More Projects</span>
+                    </div>
+                </div>
                 <div class="futuristic-card-title">Explore More</div>
             </a>
-          
+
+            <a href="https://skylocation.app" target="_blank" class="futuristic-card-link" id="tile-skylocation" rel="noopener noreferrer">
+                <div class="futuristic-card">
+                    <div class="futuristic-card-image">
+                        <img src="new-folder/skylocation.png"
+                             alt="SkyLocation Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/0f172a/38bdf8?text=SkyLocation';">
+                    </div>
+                </div>
+                <div class="futuristic-card-title">SkyLocation — pin the world’s most beautiful spots from above.</div>
+            </a>
+        </div>
     </div>
 
-    <button id="contact-btn" class="fixed z-50 bottom-6 right-6 hidden group">
+    <button id="contact-btn" class="fixed z-50 bottom-6 right-6 group">
         <div class="futuristic-card flex items-center justify-center w-16 h-16 shadow-lg transition-transform group-hover:scale-105 p-0 m-0" style="background: linear-gradient(135deg, #111827 60%, #667eea 100%); border-radius: 1.5rem;">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z" />
@@ -111,6 +157,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js" defer></script>
     <script>
+    // Security: Input sanitization function
+    function sanitizeText(text) {
+        if (typeof text !== 'string') return '';
+        // Remove potentially harmful characters and HTML tags
+        return text.replace(/[<>"'&]/g, function(match) {
+            const escapeChars = {
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#x27;',
+                '&': '&amp;'
+            };
+            return escapeChars[match];
+        }).substring(0, 500); // Limit length to prevent DoS
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
         const tilesSection = document.getElementById('tiles-section');
         const contactBtn = document.getElementById('contact-btn');
@@ -150,15 +212,30 @@
         const contactSuccess = document.getElementById('contact-success');
 
         if (contactBtn && contactModal && closeModal) {
-            contactBtn.addEventListener('click', () => {
+            const openModal = (e) => {
+                if (e) e.preventDefault();
+                contactModal.classList.remove('hidden');
                 contactModal.classList.add('show');
-            });
-            closeModal.addEventListener('click', () => {
+            };
+            const closeModalFn = (e) => {
+                if (e) e.preventDefault();
                 contactModal.classList.remove('show');
-            });
+                contactModal.classList.add('hidden');
+            };
+            contactBtn.addEventListener('click', openModal);
+            closeModal.addEventListener('click', closeModalFn);
             contactModal.addEventListener('click', (e) => {
-                if (e.target === contactModal) contactModal.classList.remove('show');
+                if (e.target === contactModal) closeModalFn(e);
             });
+            // ESC to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && contactModal.classList.contains('show')) {
+                    closeModalFn();
+                }
+            });
+            // Expose helpers for debugging if needed
+            window.__openContactModal = openModal;
+            window.__closeContactModal = closeModalFn;
         }
 
         // Form submit logic (remains the same)
@@ -176,6 +253,7 @@
                         contactSuccess.classList.remove('hidden'); // Show success
                         // Optionally hide modal after a delay
                         setTimeout(() => {
+                            contactModal.classList.remove('show');
                             contactModal.classList.add('hidden');
                             // Reset for next time
                             contactForm.style.display = 'flex';
@@ -184,11 +262,17 @@
                     } else {
                          response.json().then(data => {
                            if (Object.hasOwn(data, 'errors')) {
-                             alert(data["errors"].map(error => error["message"]).join(", "));
+                             // Sanitize error messages before displaying
+                             const sanitizedErrors = data["errors"]
+                                 .map(error => sanitizeText(error["message"] || 'Unknown error'))
+                                 .join(", ");
+                             alert(sanitizedErrors || 'There was a problem sending your message. Please try again.');
                            } else {
                              alert('There was a problem sending your message. Please try again.');
                            }
-                         })
+                         }).catch(() => {
+                             alert('There was a problem sending your message. Please try again.');
+                         });
                     }
                 }).catch(() => {
                     alert('There was a problem sending your message. Check your connection and try again.');
