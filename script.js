@@ -35,7 +35,7 @@ const moreProjFlyLook = new THREE.Vector3(0, -20, -200); // Look down more
 const flyToMoreProjDuration = 2.0; // Faster transition
 
 // Add these camera positions for back transition
-const backTransitionDuration = 2.0;
+const backTransitionDuration = 0.2;
 let isTransitioningBack = false;
 let backTransitionStartTime = 0;
 
@@ -57,7 +57,7 @@ const TRAIL_FADE = 1.2;
 
 // --- Page Detection ---
 // Detect if we are on the fun projects page
-const isFunProjectsPage = window.location.pathname.includes('fun-projects.html');
+const isFunProjectsPage = /\/fun-projects(?:\/index\.html|\.html|\/)?$/.test(window.location.pathname);
 
 // --- Initialization ---
 function initThreeJS() {
@@ -358,7 +358,7 @@ function animate() {
             
             // Navigate at the very end
             if (t >= 1) {
-                window.location.href = "fun-projects.html";
+                window.location.href = "fun-projects/";
             }
         }
     } else if (isFunProjectsPage && isTransitioningBack) {
@@ -371,12 +371,12 @@ function animate() {
         camera.lookAt(currentLookAt);
 
         // Fade out near the end
-        if (t > 0.7) {
-            document.body.style.opacity = 1 - ((t - 0.7) / 0.3);
+        if (t > 0.4) {
+            document.body.style.opacity = 1 - ((t - 0.4) / 0.6);
         }
 
         if (t >= 1) {
-            window.location.href = "index.html#tiles";
+            window.location.href = "../#tiles";
         }
     } else if (isFunProjectsPage) {
         camera.lookAt(cameraFunProjectsLook); // Keep looking at the target
@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetLink && targetLink.href && targetLink.hostname === window.location.hostname && !targetLink.href.includes('#') && targetLink.id !== 'back-btn') {
 
              // Check if it's the Fun Projects link on the index page
-             if (!isFunProjectsPage && targetLink.href.includes('fun-projects.html')) {
+             if (!isFunProjectsPage && targetLink.href.includes('/fun-projects')) {
                 event.preventDefault(); // Prevent immediate navigation
                 document.body.style.transition = 'opacity 0.5s ease-out';
                 document.body.style.opacity = 0;
@@ -774,6 +774,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 backTransitionStartTime = performance.now();
                 currentLookAt = camera.getWorldDirection(new THREE.Vector3());
             }
+        });
+    }
+
+    const backHomeBtn = document.getElementById('back-home-btn');
+    if (backHomeBtn && !isFunProjectsPage) {
+        backHomeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = './';
         });
     }
 });

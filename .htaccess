@@ -26,7 +26,22 @@ DirectoryIndex index.html
     Header always unset X-Powered-By
 </IfModule>
 
-# Redirect /index.html to /
+# Clean URLs
 RewriteEngine On
-RewriteCond %{THE_REQUEST} /index\.html[\s?] [NC]
+
+# Redirect /index.html to /
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
 RewriteRule ^index\.html$ / [R=301,L]
+
+# Redirect /page.html to /page
+RewriteCond %{THE_REQUEST} \s/+([^.]+)\.html[\s?] [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# Remove trailing slash for non-directories
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ $1 [R=301,L]
+
+# Serve extensionless paths from .html files
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
