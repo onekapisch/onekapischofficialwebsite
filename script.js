@@ -19,7 +19,7 @@ function sanitizeText(text) {
 }
 let isFlying = false; // Flag for camera animation state (index page only)
 let flyStartTime = 0;
-const flyDuration = 5.0;
+const flyDuration = 3.0;
 let hasTransitioned = false; // Flag: view switched to tiles (index page) OR fun projects page loaded
 let tilesAnimated = false; // Flag: ensure tiles animate in only once per page load
 let highlightedVertexIndices = []; // Array to store currently highlighted vertices
