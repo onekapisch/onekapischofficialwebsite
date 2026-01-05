@@ -190,11 +190,26 @@ body {
     width: 100%;
     max-width: 1200px; /* Default max width for index page */
 }
+
+#tiles-section .grid {
+    row-gap: 8.9rem;
+}
   
   /* Specific max-width for fun projects page */
   #fun-projects-tiles-section .grid,
   #fun-projects-tiles-section .flex {
       max-width: 1000px; /* Slightly narrower for fun projects */
+  }
+
+  #fun-projects-tiles-section .fun-projects-grid {
+      justify-items: center;
+  }
+
+  @media (min-width: 640px) {
+      #fun-projects-tiles-section .fun-last-card {
+          grid-column: 1 / -1;
+          justify-self: center;
+      }
   }
   
   /* Make tiles section visible with fade-in */
@@ -357,6 +372,15 @@ body {
     letter-spacing: 0.01em;
 }
 
+.futuristic-card-subtitle {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #cbd5f5;
+    letter-spacing: 0.02em;
+}
+
 .futuristic-card-link:hover .futuristic-card-title {
    color: #f8fafc;
 }
@@ -486,7 +510,8 @@ body {
       word-break: break-word;
   }
   #github-profile {
-      margin: 1.5rem 0;
+      margin-top: 0.5rem;
+      margin-bottom: 3.5rem;
   }
   #contact-btn {
       right: 1rem;
@@ -542,10 +567,15 @@ body {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-bottom: 2rem;
+      margin-top: 0.25rem;
+      margin-bottom: 5rem;
       opacity: 0; /* Initially hidden */
       transform: translateY(-20px);
       transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  .back-home-wrapper {
+      margin-top: 5rem;
   }
 
   #github-profile a {
