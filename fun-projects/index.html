@@ -7,30 +7,30 @@
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO and Professional Meta Tags -->
     <title>More Projects - Kapisch | Creative Web Applications & Tools</title>
     <meta name="description" content="Explore Kapisch's creative projects including Movie Mood selector, Travel Tracker, Flappy Bird game, Trump Tariff Tracker, and Market Compass. Innovative web applications showcasing diverse development skills.">
     <meta name="keywords" content="web applications, creative projects, movie recommendations, travel tracker, games, market tools, web developer portfolio">
     <meta name="author" content="Kapisch">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://onekapisch.github.io/onekapischofficialwebsite/fun-projects/">
     <meta property="og:title" content="More Projects - Kapisch | Creative Web Applications">
     <meta property="og:description" content="Explore Kapisch's creative projects including games, utilities, and innovative web applications.">
     <meta property="og:image" content="https://onekapisch.github.io/onekapischofficialwebsite/new-folder/Githubprofile.png">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://onekapisch.github.io/onekapischofficialwebsite/fun-projects/">
     <meta property="twitter:title" content="More Projects - Kapisch | Creative Web Applications">
     <meta property="twitter:description" content="Explore Kapisch's creative projects including games, utilities, and innovative web applications.">
     <meta property="twitter:image" content="https://onekapisch.github.io/onekapischofficialwebsite/new-folder/Githubprofile.png">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://onekapisch.github.io/onekapischofficialwebsite/fun-projects/">
-    
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#000000">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,56 +44,107 @@
              Welcome to the Cool Shop Projects
          </h2>
 
-         <div class="fun-projects-grid grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 w-full max-w-5xl mx-auto px-4">
-            <a href="https://mood-netflix.vercel.app/" target="_blank" rel="noopener noreferrer" class="futuristic-card-link" id="fun-tile-1">
-                <div class="futuristic-card">
-                    <div class="futuristic-card-content-placeholder">
-                        <img src="../new-folder/moviemood.png">
-                        <span class="text-3xl font-bold text-white"></span>
+         <!-- Portal Grid for Fun Projects -->
+         <div id="fun-portals-grid" class="portals-grid portals-grid-2col">
+            <!-- Portal 1: Movie Mood -->
+            <div class="portal-container"
+                 data-project-id="moviemood"
+                 data-url="https://mood-netflix.vercel.app/"
+                 data-target="_blank"
+                 data-image="../new-folder/moviemood.png"
+                 data-title="Movie Mood"
+                 data-subtitle="Movie suggestions based on your mood">
+                <canvas class="portal-canvas"></canvas>
+                <div class="portal-content">
+                    <div class="portal-image-wrapper">
+                        <img src="../new-folder/moviemood.png" alt="Movie Mood Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/0f172a/38bdf8?text=Movie+Mood';">
                     </div>
+                    <div class="portal-title">Movie Mood</div>
+                    <div class="portal-subtitle">Movie suggestions based on your mood</div>
                 </div>
-                <div class="futuristic-card-title">Movie suggestions based on your mood</div>
-            </a>
+                <div class="constellation-label">Movie Mood</div>
+            </div>
 
-            <a href="https://traveltracker-seven.vercel.app/" target="_blank" rel="noopener noreferrer" class="futuristic-card-link" id="fun-tile-2">
-                <div class="futuristic-card">
-                    <div class="futuristic-card-content-placeholder">
-                        <img src="../new-folder/Atlasphere.png">
-                        <span class="text-3xl font-bold text-white"></span>
+            <!-- Portal 2: Travel Tracker -->
+            <div class="portal-container"
+                 data-project-id="traveltracker"
+                 data-url="https://traveltracker-seven.vercel.app/"
+                 data-target="_blank"
+                 data-image="../new-folder/Atlasphere.png"
+                 data-title="Travel Tracker"
+                 data-subtitle="Track your Worldwide visits">
+                <canvas class="portal-canvas"></canvas>
+                <div class="portal-content">
+                    <div class="portal-image-wrapper">
+                        <img src="../new-folder/Atlasphere.png" alt="Travel Tracker Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/0f172a/38bdf8?text=Travel+Tracker';">
                     </div>
+                    <div class="portal-title">Travel Tracker</div>
+                    <div class="portal-subtitle">Track your Worldwide visits</div>
                 </div>
-                <div class="futuristic-card-title">Track your Worldwide visits</div>
-            </a>
+                <div class="constellation-label">Travel Tracker</div>
+            </div>
 
-            <a href="https://flappybird-seven.vercel.app/" target="_blank" rel="noopener noreferrer" class="futuristic-card-link" id="fun-tile-2">
-                <div class="futuristic-card">
-                    <div class="futuristic-card-content-placeholder">
-                        <img src="../new-folder/flappybird.png">
-                        <span class="text-3xl font-bold text-white"></span>
+            <!-- Portal 3: Flappy Bird -->
+            <div class="portal-container"
+                 data-project-id="flappybird"
+                 data-url="https://flappybird-seven.vercel.app/"
+                 data-target="_blank"
+                 data-image="../new-folder/flappybird.png"
+                 data-title="Flappy Bird"
+                 data-subtitle="Not so easy as you think">
+                <canvas class="portal-canvas"></canvas>
+                <div class="portal-content">
+                    <div class="portal-image-wrapper">
+                        <img src="../new-folder/flappybird.png" alt="Flappy Bird Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/0f172a/38bdf8?text=Flappy+Bird';">
                     </div>
+                    <div class="portal-title">Flappy Bird</div>
+                    <div class="portal-subtitle">Not so easy as you think</div>
                 </div>
-                <div class="futuristic-card-title">Not so easy as you think</div>
-            </a>
+                <div class="constellation-label">Flappy Bird</div>
+            </div>
 
-            <a href="https://trumptarifftracker.vercel.app/" target="_blank" rel="noopener noreferrer" class="futuristic-card-link" id="fun-tile-3">
-                <div class="futuristic-card">
-                    <div class="futuristic-card-content-placeholder">
-                        <img src="../new-folder/trumptarifftracker.png">
-                        <span class="text-3xl font-bold text-white"></span>
+            <!-- Portal 4: Trump Tariff Tracker -->
+            <div class="portal-container"
+                 data-project-id="tarifftracker"
+                 data-url="https://trumptarifftracker.vercel.app/"
+                 data-target="_blank"
+                 data-image="../new-folder/trumptarifftracker.png"
+                 data-title="Tariff Tracker"
+                 data-subtitle="Track the Tariff mess">
+                <canvas class="portal-canvas"></canvas>
+                <div class="portal-content">
+                    <div class="portal-image-wrapper">
+                        <img src="../new-folder/trumptarifftracker.png" alt="Tariff Tracker Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/0f172a/38bdf8?text=Tariff+Tracker';">
                     </div>
+                    <div class="portal-title">Tariff Tracker</div>
+                    <div class="portal-subtitle">Track the Tariff mess</div>
                 </div>
-                <div class="futuristic-card-title">Track the Tariff mess</div>
-            </a>
-                
-            <a href="https://v0-global-compass-five.vercel.app/" target="_blank" rel="noopener noreferrer" class="futuristic-card-link fun-last-card" id="fun-tile-3">
-                <div class="futuristic-card">
-                    <div class="futuristic-card-content-placeholder">
-                        <img src="../new-folder/marketcompass.png">
-                        <span class="text-3xl font-bold text-white"></span>
+                <div class="constellation-label">Tariff Tracker</div>
+            </div>
+
+            <!-- Portal 5: Market Compass -->
+            <div class="portal-container portal-centered-last"
+                 data-project-id="marketcompass"
+                 data-url="https://v0-global-compass-five.vercel.app/"
+                 data-target="_blank"
+                 data-image="../new-folder/marketcompass.png"
+                 data-title="Market Compass"
+                 data-subtitle="Stock Trading Hours & More">
+                <canvas class="portal-canvas"></canvas>
+                <div class="portal-content">
+                    <div class="portal-image-wrapper">
+                        <img src="../new-folder/marketcompass.png" alt="Market Compass Preview"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x300/0f172a/38bdf8?text=Market+Compass';">
                     </div>
+                    <div class="portal-title">Market Compass</div>
+                    <div class="portal-subtitle">Stock Trading Hours & More</div>
                 </div>
-                <div class="futuristic-card-title">Stock Trading Hours & More</div>
-            </a>
+                <div class="constellation-label">Market Compass</div>
+            </div>
         </div>
         <div class="mt-16 text-center" style="opacity: 0; animation: fadeIn 1s 1s forwards;">
              <a href="../#tiles" id="back-btn" class="btn-76">
@@ -109,6 +160,7 @@
     <button id="fly-btn" class="hidden"></button>
     <div id="tiles-section" class="hidden"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="../script.js" defer></script>
 </body>
 </html>

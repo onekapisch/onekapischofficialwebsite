@@ -2,6 +2,17 @@
 let scene, camera, renderer, lowPolyMesh, stars, raycaster, mouse;
 let clock = new THREE.Clock();
 
+// --- Realistic Star System Data ---
+let starTwinkleData = []; // Stores per-star animation data (phase, speed, baseOpacity)
+let starColors = null; // BufferAttribute for star colors
+let starSizes = null; // BufferAttribute for star sizes
+let starBaseSizes = []; // Original sizes for reference during animation
+let starBaseColors = []; // Original colors for reference during animation
+
+// --- Constellation Portal System ---
+const portalInstances = [];
+const isMobileDevice = window.innerWidth < 768 || 'ontouchstart' in window;
+
 // --- Security: Input Sanitization Function ---
 function sanitizeText(text) {
     if (typeof text !== 'string') return '';
@@ -100,38 +111,181 @@ function initThreeJS() {
     renderer.domElement.style.zIndex = '-1';
 
 
-    // --- Starfield ---
+    // --- Realistic Starfield with Color & Size Variation ---
     const starVertices = [];
-    const numStars = 30000, starSpread = 1000;
+    const starColorValues = [];
+    const starSizeValues = [];
+    starTwinkleData = [];
+    starBaseSizes = [];
+    starBaseColors = [];
+
+    const numStars = 25000;
+    const starSpread = 1000;
+
+    // Star color temperature palette (from hot blue to cool red-orange)
+    const starColorPalette = [
+        { r: 0.6, g: 0.7, b: 1.0 },   // Blue-white (hot O/B stars)
+        { r: 0.75, g: 0.85, b: 1.0 }, // Light blue-white
+        { r: 0.9, g: 0.95, b: 1.0 },  // White-blue tint
+        { r: 1.0, g: 1.0, b: 1.0 },   // Pure white (A stars)
+        { r: 1.0, g: 0.98, b: 0.95 }, // Warm white
+        { r: 1.0, g: 0.95, b: 0.85 }, // Yellow-white (F/G stars like Sun)
+        { r: 1.0, g: 0.9, b: 0.75 },  // Light yellow
+        { r: 1.0, g: 0.85, b: 0.7 },  // Yellow-orange (K stars)
+        { r: 1.0, g: 0.75, b: 0.6 },  // Orange
+    ];
+
     for (let i = 0; i < numStars; i++) {
         const x = THREE.MathUtils.randFloatSpread(starSpread * 2);
-        // Adjusted Y range to feel more surrounding on fun projects page
         const y = THREE.MathUtils.randFloat(-starSpread * 0.5, starSpread * 1.5);
         const z = THREE.MathUtils.randFloatSpread(starSpread * 2);
-         // Ensure stars are not too close initially
+
+        // Ensure stars are not too close initially
         if (Math.sqrt(x * x + y * y + z * z) > 50) {
-             starVertices.push(x, y, z);
+            starVertices.push(x, y, z);
+
+            // Color variation - weighted towards white/blue-white (most common visible)
+            const colorRand = Math.pow(Math.random(), 0.7); // Bias towards lower indices (bluer)
+            const colorIndex = Math.floor(colorRand * starColorPalette.length);
+            const starColor = starColorPalette[Math.min(colorIndex, starColorPalette.length - 1)];
+
+            // Add slight random variation to each star's color
+            const colorVariation = 0.05;
+            const finalR = Math.min(1, starColor.r + (Math.random() - 0.5) * colorVariation);
+            const finalG = Math.min(1, starColor.g + (Math.random() - 0.5) * colorVariation);
+            const finalB = Math.min(1, starColor.b + (Math.random() - 0.5) * colorVariation);
+            starColorValues.push(finalR, finalG, finalB);
+            starBaseColors.push(finalR, finalG, finalB); // Store original colors for twinkling
+
+            // Size variation using power distribution (many dim, few bright)
+            // Magnitude-like distribution: most stars small, few large bright ones
+            const sizeRand = Math.random();
+            let starSize;
+            if (sizeRand > 0.998) {
+                // Very rare bright stars (0.2%)
+                starSize = THREE.MathUtils.randFloat(8, 12);
+            } else if (sizeRand > 0.99) {
+                // Rare bright stars (0.8%)
+                starSize = THREE.MathUtils.randFloat(5, 8);
+            } else if (sizeRand > 0.95) {
+                // Uncommon medium-bright stars (4%)
+                starSize = THREE.MathUtils.randFloat(3, 5);
+            } else if (sizeRand > 0.7) {
+                // Common medium stars (25%)
+                starSize = THREE.MathUtils.randFloat(1.5, 3);
+            } else {
+                // Most common dim stars (70%)
+                starSize = THREE.MathUtils.randFloat(0.5, 1.5);
+            }
+            starSizeValues.push(starSize);
+            starBaseSizes.push(starSize);
+
+            // Twinkling data: phase offset, speed, and base brightness
+            starTwinkleData.push({
+                phase: Math.random() * Math.PI * 2,
+                speed: 0.5 + Math.random() * 2.5, // Varied twinkle speeds
+                baseAlpha: 0.6 + Math.random() * 0.4, // Base brightness variation
+                twinkleAmount: 0.1 + Math.random() * 0.3 // How much it twinkles
+            });
         }
     }
+
     const starGeometry = new THREE.BufferGeometry();
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColorValues, 3));
+    starGeometry.setAttribute('size', new THREE.Float32BufferAttribute(starSizeValues, 1));
+
+    // Store references for animation
+    starColors = starGeometry.attributes.color;
+    starSizes = starGeometry.attributes.size;
+
+    // Create a softer, more realistic star texture programmatically
+    const starCanvas = document.createElement('canvas');
+    starCanvas.width = 64;
+    starCanvas.height = 64;
+    const starCtx = starCanvas.getContext('2d');
+
+    // Create radial gradient for soft glow effect
+    const gradient = starCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.8)');
+    gradient.addColorStop(0.25, 'rgba(255, 255, 255, 0.4)');
+    gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
+    gradient.addColorStop(0.75, 'rgba(255, 255, 255, 0.05)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    starCtx.fillStyle = gradient;
+    starCtx.fillRect(0, 0, 64, 64);
+
+    const starTexture = new THREE.CanvasTexture(starCanvas);
+    starTexture.needsUpdate = true;
+
     const starMaterial = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 3.5,
+        size: 3,
         sizeAttenuation: true,
         transparent: true,
-        opacity: 2.8,
-        map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png'),
+        opacity: 1,
+        map: starTexture,
         blending: THREE.AdditiveBlending,
-        depthWrite: false
+        depthWrite: false,
+        vertexColors: true // Enable per-vertex colors
     });
+
     stars = new THREE.Points(starGeometry, starMaterial);
-    // Slightly adjust star position/rotation for fun projects page? (Optional)
+
+    // Slightly adjust star position/rotation for fun projects page
     if (isFunProjectsPage) {
-         stars.rotation.x = 0.1; // Example subtle difference
-         stars.position.y = -30;
+        stars.rotation.x = 0.1;
+        stars.position.y = -30;
     }
     scene.add(stars);
+
+    // --- Add a second layer of distant dim background stars for depth ---
+    const bgStarVertices = [];
+    const bgStarColors = [];
+    const numBgStars = 8000;
+    const bgSpread = 1800;
+
+    for (let i = 0; i < numBgStars; i++) {
+        const x = THREE.MathUtils.randFloatSpread(bgSpread * 2);
+        const y = THREE.MathUtils.randFloat(-bgSpread * 0.3, bgSpread * 1.2);
+        const z = THREE.MathUtils.randFloatSpread(bgSpread * 2);
+
+        const dist = Math.sqrt(x * x + y * y + z * z);
+        if (dist > 400) { // Only far away stars
+            bgStarVertices.push(x, y, z);
+
+            // Dimmer, mostly white/blue tint for distant stars
+            const dimFactor = 0.3 + Math.random() * 0.3;
+            bgStarColors.push(
+                dimFactor * (0.8 + Math.random() * 0.2),
+                dimFactor * (0.85 + Math.random() * 0.15),
+                dimFactor * (0.9 + Math.random() * 0.1)
+            );
+        }
+    }
+
+    const bgStarGeometry = new THREE.BufferGeometry();
+    bgStarGeometry.setAttribute('position', new THREE.Float32BufferAttribute(bgStarVertices, 3));
+    bgStarGeometry.setAttribute('color', new THREE.Float32BufferAttribute(bgStarColors, 3));
+
+    const bgStarMaterial = new THREE.PointsMaterial({
+        size: 1.2,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0.6,
+        map: starTexture,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        vertexColors: true
+    });
+
+    const bgStars = new THREE.Points(bgStarGeometry, bgStarMaterial);
+    if (isFunProjectsPage) {
+        bgStars.rotation.x = 0.1;
+        bgStars.position.y = -30;
+    }
+    scene.add(bgStars);
 
     // --- Low Poly Plane Geometry (Only add if NOT on fun projects page) ---
     if (!isFunProjectsPage) {
@@ -185,14 +339,20 @@ function initThreeJS() {
     animate();
 
     // --- Post-Initialization UI Logic ---
-    // If on fun projects page, directly animate tiles in
+    // If on fun projects page, directly animate tiles/portals in
     if (isFunProjectsPage) {
         const funTilesSection = document.getElementById('fun-projects-tiles-section');
         if (funTilesSection && !tilesAnimated) {
             funTilesSection.classList.add('active'); // Ensure section is displayed
             // Use timeout to allow initial render before animation starts
              setTimeout(() => {
-                animateTilesIn('#fun-projects-tiles-section .futuristic-card-link');
+                // Check if using new portal system
+                const funPortalsGrid = document.getElementById('fun-portals-grid');
+                if (funPortalsGrid && !isMobileDevice) {
+                    initConstellationPortals();
+                } else {
+                    animateTilesIn('#fun-projects-tiles-section .futuristic-card-link');
+                }
                 tilesAnimated = true;
              }, 100); // Small delay
         }
@@ -286,9 +446,21 @@ function animate() {
             const githubProfile = document.getElementById('github-profile'); // GitHub profile section
             if (tilesSection) {
                 tilesSection.classList.add('active');
-                // Animate tiles in if not already done
+                // Animate tiles/portals in if not already done
                 if (!tilesAnimated) {
-                    animateTilesIn('#tiles-section .futuristic-card-link'); // Target index page tiles
+                    // Check if using new portal system
+                    const portalsGrid = document.getElementById('portals-grid');
+                    if (portalsGrid && !isMobileDevice) {
+                        // Initialize constellation portals if not already done
+                        if (portalInstances.length === 0) {
+                            initConstellationPortals();
+                        } else {
+                            animatePortalsIn();
+                        }
+                    } else {
+                        // Fallback to old tile animation
+                        animateTilesIn('#tiles-section .futuristic-card-link');
+                    }
                     tilesAnimated = true;
                 }
                 // Show contact button after tiles animate in (ensure it's not hidden)
@@ -327,7 +499,7 @@ function animate() {
         camera.lookAt(currentLookAt);
         
         // Hide page content gradually but keep starfield visible
-        const contentElements = document.querySelectorAll('.futuristic-card-link, #contact-btn, #github-profile, .section-title');
+        const contentElements = document.querySelectorAll('.portal-container, .futuristic-card-link, #contact-btn, #github-profile, .section-title');
         if (t > 0.4) {
             contentElements.forEach(el => {
                 if (el) el.style.opacity = Math.max(0, 1 - ((t - 0.4) / 0.4));
@@ -416,10 +588,43 @@ function animate() {
         colors.needsUpdate = true;
     }
 
-    // --- Starfield Animation (Runs on both pages) ---
-    if (stars && !isFlyingToFunProjects) { // Normal star animation when not in transition
-        stars.rotation.y += 0.001; // Slower rotation
-        stars.material.opacity = 0.9 + Math.sin(elapsedTime * 0.3) * 0.3; // Smoother opacity pulse
+    // --- Realistic Starfield Animation with Twinkling (Runs on both pages) ---
+    if (stars && !isFlyingToFunProjects) {
+        // Slow rotation for subtle movement
+        stars.rotation.y += 0.0003;
+
+        // Individual star twinkling animation
+        if (starColors && starSizes && starTwinkleData.length > 0 && starBaseColors.length > 0) {
+            const colorArray = starColors.array;
+            const sizeArray = starSizes.array;
+
+            // Update all stars but with efficient calculation
+            const numStars = starTwinkleData.length;
+
+            for (let i = 0; i < numStars; i++) {
+                const twinkle = starTwinkleData[i];
+
+                // Calculate twinkle factor using sine wave with per-star phase and speed
+                const twinkleFactor = Math.sin(elapsedTime * twinkle.speed + twinkle.phase);
+
+                // Modulate brightness (color intensity) for twinkling effect
+                const brightness = twinkle.baseAlpha + twinkleFactor * twinkle.twinkleAmount;
+
+                // Apply brightness to base colors
+                const colorIndex = i * 3;
+                colorArray[colorIndex] = starBaseColors[colorIndex] * brightness;
+                colorArray[colorIndex + 1] = starBaseColors[colorIndex + 1] * brightness;
+                colorArray[colorIndex + 2] = starBaseColors[colorIndex + 2] * brightness;
+
+                // Subtle size pulsing for brighter stars only
+                if (starBaseSizes[i] > 3) {
+                    sizeArray[i] = starBaseSizes[i] * (0.92 + twinkleFactor * 0.12);
+                }
+            }
+
+            starColors.needsUpdate = true;
+            starSizes.needsUpdate = true;
+        }
     }
 
     renderer.render(scene, camera);
@@ -493,27 +698,159 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (contactBtn) contactBtn.classList.remove('hidden');
 
+    // --- Transmission Portal Particle System ---
+    let portalParticlesInterval = null;
+
+    function createPortalParticles() {
+        const particlesContainer = document.getElementById('portal-particles');
+        if (!particlesContainer) return;
+
+        // Clear existing particles
+        particlesContainer.innerHTML = '';
+
+        // Create floating particles
+        const createParticle = () => {
+            const particle = document.createElement('div');
+            particle.className = 'floating-particle';
+
+            // Random position
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+
+            // Random size
+            const size = Math.random() * 4 + 2;
+
+            // Random color
+            const colors = ['#38bdf8', '#5eead4', '#667eea', '#ffffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            // Random animation duration
+            const duration = Math.random() * 4 + 3;
+            const delay = Math.random() * 2;
+
+            particle.style.cssText = `
+                position: absolute;
+                left: ${startX}%;
+                top: ${startY}%;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${color};
+                border-radius: 50%;
+                box-shadow: 0 0 ${size * 2}px ${color};
+                opacity: 0;
+                pointer-events: none;
+                animation: floatParticle ${duration}s ease-in-out ${delay}s infinite;
+            `;
+
+            particlesContainer.appendChild(particle);
+
+            // Remove particle after a while to prevent memory buildup
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.remove();
+                }
+            }, (duration + delay) * 3000);
+        };
+
+        // Create initial batch of particles
+        for (let i = 0; i < 15; i++) {
+            createParticle();
+        }
+
+        // Keep creating particles while modal is open
+        portalParticlesInterval = setInterval(() => {
+            if (contactModal && contactModal.classList.contains('show')) {
+                createParticle();
+            }
+        }, 800);
+    }
+
+    function clearPortalParticles() {
+        if (portalParticlesInterval) {
+            clearInterval(portalParticlesInterval);
+            portalParticlesInterval = null;
+        }
+        const particlesContainer = document.getElementById('portal-particles');
+        if (particlesContainer) {
+            particlesContainer.innerHTML = '';
+        }
+    }
+
+    // Add particle animation keyframes dynamically
+    if (!document.getElementById('portal-particle-styles')) {
+        const particleStyles = document.createElement('style');
+        particleStyles.id = 'portal-particle-styles';
+        particleStyles.textContent = `
+            @keyframes floatParticle {
+                0% {
+                    opacity: 0;
+                    transform: translateY(0) translateX(0) scale(0);
+                }
+                20% {
+                    opacity: 0.8;
+                    transform: translateY(-10px) translateX(5px) scale(1);
+                }
+                50% {
+                    opacity: 0.6;
+                    transform: translateY(-25px) translateX(-10px) scale(0.8);
+                }
+                80% {
+                    opacity: 0.3;
+                    transform: translateY(-40px) translateX(8px) scale(0.5);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-60px) translateX(0) scale(0);
+                }
+            }
+        `;
+        document.head.appendChild(particleStyles);
+    }
+
     if (contactBtn && contactModal && closeModal) {
+        const backdrop = contactModal.querySelector('.transmission-backdrop');
+
         const openModal = (e) => {
             if (e) e.preventDefault();
             contactModal.classList.remove('hidden');
-            contactModal.classList.add('show');
+            // Small delay to trigger CSS transition
+            requestAnimationFrame(() => {
+                contactModal.classList.add('show');
+                createPortalParticles();
+            });
         };
+
         const closeModalFn = (e) => {
             if (e) e.preventDefault();
             contactModal.classList.remove('show');
-            contactModal.classList.add('hidden');
+            clearPortalParticles();
+            // Wait for animation to complete before hiding
+            setTimeout(() => {
+                if (!contactModal.classList.contains('show')) {
+                    contactModal.classList.add('hidden');
+                }
+            }, 500);
         };
+
         contactBtn.addEventListener('click', openModal);
         closeModal.addEventListener('click', closeModalFn);
+
+        // Close on backdrop click
+        if (backdrop) {
+            backdrop.addEventListener('click', closeModalFn);
+        }
+
+        // Also close if clicking the modal itself (outside portal)
         contactModal.addEventListener('click', (e) => {
             if (e.target === contactModal) closeModalFn(e);
         });
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && contactModal.classList.contains('show')) {
                 closeModalFn();
             }
         });
+
         // Expose helpers for quick debugging
         window.__openContactModal = openModal;
         window.__closeContactModal = closeModalFn;
@@ -522,6 +859,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm && contactModal && contactSuccess) {
         contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
+
+            // Add sending state to button
+            const submitBtn = contactForm.querySelector('.transmit-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.querySelector('.btn-text').textContent = 'TRANSMITTING...';
+            }
+
             fetch(contactForm.action, {
                 method: 'POST',
                 body: new FormData(contactForm),
@@ -531,13 +876,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     contactForm.reset();
                     contactForm.style.display = 'none';
                     contactSuccess.classList.remove('hidden');
+
+                    // Reset button state
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector('.btn-text').textContent = 'TRANSMIT';
+                    }
+
                     setTimeout(() => {
                         contactModal.classList.remove('show');
-                        contactModal.classList.add('hidden');
-                        contactForm.style.display = 'flex';
-                        contactSuccess.classList.add('hidden');
+                        clearPortalParticles();
+                        setTimeout(() => {
+                            contactModal.classList.add('hidden');
+                            contactForm.style.display = 'flex';
+                            contactSuccess.classList.add('hidden');
+                        }, 500);
                     }, 3000);
                 } else {
+                    // Reset button state
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector('.btn-text').textContent = 'TRANSMIT';
+                    }
+
                     response.json().then(data => {
                         if (Object.hasOwn(data, 'errors')) {
                             const sanitizedErrors = data["errors"]
@@ -552,6 +913,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             }).catch(() => {
+                // Reset button state
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.querySelector('.btn-text').textContent = 'TRANSMIT';
+                }
                 alert('There was a problem sending your message. Check your connection and try again.');
             });
         });
@@ -602,33 +968,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // --- Seamless transition for "More Projects" tile ---
-        const moreProjectsTile = document.getElementById('tile-4');
-        if (moreProjectsTile) {
-            moreProjectsTile.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (!isFlyingToFunProjects) {
-                    isFlyingToFunProjects = true;
-                    flyToFunProjectsStartTime = performance.now();
-                    
-                    // Create the overlay for smooth transition if it doesn't exist
-                    if (!document.getElementById('page-transition-overlay')) {
-                        const overlay = document.createElement('div');
-                        overlay.id = 'page-transition-overlay';
-                        document.body.appendChild(overlay);
-                    }
-                    
-                    // Start from current camera position
-                    currentLookAt = camera.getWorldDirection(new THREE.Vector3());
-                    
-                    // Make sure the canvas is visible during transition
-                    const canvas = document.getElementById('bg-canvas');
-                    if (canvas) {
-                        canvas.style.zIndex = '-1';
-                        canvas.style.opacity = '1';
-                    }
-                }
-            });
-        }
+        // Note: This is now handled by the ConstellationPortal class for portal-based navigation
+        // The portal's activatePortal() method handles the camera fly animation
         
         // Fix for GitHub icon - make sure it's visible and clickable
         const githubLogo = document.querySelector('.github-logo');
@@ -784,4 +1125,509 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = './';
         });
     }
+
+    // --- Initialize Constellation Portals (only for fun-projects page, index page initializes after camera transition) ---
+    // Note: Index page portals are initialized in the camera transition callback
 });
+
+// ============================================
+// CONSTELLATION PORTAL SYSTEM
+// ============================================
+
+class ConstellationPortal {
+    constructor(container) {
+        this.container = container;
+        this.canvas = container.querySelector('.portal-canvas');
+        this.projectData = {
+            id: container.dataset.projectId,
+            url: container.dataset.url,
+            target: container.dataset.target || '_blank',
+            title: container.dataset.title,
+            image: container.dataset.image
+        };
+
+        // Portal state
+        this.isHovered = false;
+        this.convergenceProgress = 0; // 0 = scattered, 1 = converged
+        this.targetConvergence = 0;
+
+        // Star configuration
+        this.numStars = 18;
+        this.stars = [];
+        this.scatteredPositions = [];
+        this.convergedPositions = [];
+        this.constellationLines = [];
+
+        // Three.js components
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.starPoints = null;
+        this.linesMesh = null;
+        this.portalRing = null;
+        this.glowSprite = null;
+
+        // Animation
+        this.animationId = null;
+        this.clock = new THREE.Clock();
+
+        // Mouse position for tilt
+        this.mouseX = 0;
+        this.mouseY = 0;
+
+        this.init();
+    }
+
+    init() {
+        if (!this.canvas) return;
+
+        // Setup Three.js scene
+        this.scene = new THREE.Scene();
+
+        // Orthographic camera for 2D-like rendering
+        const aspect = 1;
+        const frustumSize = 10;
+        this.camera = new THREE.OrthographicCamera(
+            -frustumSize * aspect / 2,
+            frustumSize * aspect / 2,
+            frustumSize / 2,
+            -frustumSize / 2,
+            0.1,
+            100
+        );
+        this.camera.position.z = 10;
+
+        // Renderer
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: this.canvas,
+            alpha: true,
+            antialias: true
+        });
+        this.renderer.setSize(this.canvas.offsetWidth, this.canvas.offsetHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setClearColor(0x000000, 0);
+
+        // Generate star positions
+        this.generateStarPositions();
+
+        // Create visual elements
+        this.createStars();
+        this.createConstellationLines();
+        this.createPortalRing();
+        this.createGlow();
+
+        // Setup event listeners
+        this.setupEventListeners();
+
+        // Start animation loop
+        this.animate();
+    }
+
+    generateStarPositions() {
+        const scatterRadius = 4;
+        const ringRadius = 3;
+
+        for (let i = 0; i < this.numStars; i++) {
+            // Scattered positions (random within area)
+            const angle = Math.random() * Math.PI * 2;
+            const r = Math.random() * scatterRadius * 0.8 + scatterRadius * 0.2;
+            const scatter = {
+                x: Math.cos(angle) * r + (Math.random() - 0.5) * 2,
+                y: Math.sin(angle) * r + (Math.random() - 0.5) * 2,
+                z: (Math.random() - 0.5) * 0.5,
+                driftSpeed: 0.3 + Math.random() * 0.5,
+                driftOffset: Math.random() * Math.PI * 2
+            };
+            this.scatteredPositions.push(scatter);
+
+            // Converged positions (ring formation)
+            const ringAngle = (i / this.numStars) * Math.PI * 2;
+            const converged = {
+                x: Math.cos(ringAngle) * ringRadius,
+                y: Math.sin(ringAngle) * ringRadius,
+                z: 0
+            };
+            this.convergedPositions.push(converged);
+
+            // Current star state
+            this.stars.push({
+                x: scatter.x,
+                y: scatter.y,
+                z: scatter.z,
+                size: 0.08 + Math.random() * 0.06,
+                brightness: 0.6 + Math.random() * 0.4
+            });
+        }
+
+        // Generate constellation line connections (only between nearby stars)
+        for (let i = 0; i < this.numStars; i++) {
+            for (let j = i + 1; j < this.numStars; j++) {
+                const dx = this.scatteredPositions[i].x - this.scatteredPositions[j].x;
+                const dy = this.scatteredPositions[i].y - this.scatteredPositions[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 3 && Math.random() > 0.5) {
+                    this.constellationLines.push({ from: i, to: j });
+                }
+            }
+        }
+    }
+
+    createStars() {
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(this.numStars * 3);
+        const sizes = new Float32Array(this.numStars);
+        const colors = new Float32Array(this.numStars * 3);
+
+        for (let i = 0; i < this.numStars; i++) {
+            positions[i * 3] = this.stars[i].x;
+            positions[i * 3 + 1] = this.stars[i].y;
+            positions[i * 3 + 2] = this.stars[i].z;
+            sizes[i] = this.stars[i].size * 50;
+
+            // Cyan-white color
+            const brightness = this.stars[i].brightness;
+            colors[i * 3] = 0.7 * brightness;
+            colors[i * 3 + 1] = 0.9 * brightness;
+            colors[i * 3 + 2] = 1.0 * brightness;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.9,
+            sizeAttenuation: true,
+            blending: THREE.AdditiveBlending
+        });
+
+        this.starPoints = new THREE.Points(geometry, material);
+        this.scene.add(this.starPoints);
+    }
+
+    createConstellationLines() {
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(this.constellationLines.length * 6);
+
+        for (let i = 0; i < this.constellationLines.length; i++) {
+            const line = this.constellationLines[i];
+            const fromStar = this.stars[line.from];
+            const toStar = this.stars[line.to];
+
+            positions[i * 6] = fromStar.x;
+            positions[i * 6 + 1] = fromStar.y;
+            positions[i * 6 + 2] = fromStar.z;
+            positions[i * 6 + 3] = toStar.x;
+            positions[i * 6 + 4] = toStar.y;
+            positions[i * 6 + 5] = toStar.z;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.LineBasicMaterial({
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0.25,
+            blending: THREE.AdditiveBlending
+        });
+
+        this.linesMesh = new THREE.LineSegments(geometry, material);
+        this.scene.add(this.linesMesh);
+    }
+
+    createPortalRing() {
+        // Outer ring
+        const ringGeometry = new THREE.TorusGeometry(3, 0.08, 16, 64);
+        const ringMaterial = new THREE.MeshBasicMaterial({
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending
+        });
+        this.portalRing = new THREE.Mesh(ringGeometry, ringMaterial);
+        this.portalRing.scale.set(0, 0, 1);
+        this.scene.add(this.portalRing);
+
+        // Inner ring
+        const innerRingGeometry = new THREE.TorusGeometry(2.8, 0.03, 16, 64);
+        const innerRingMaterial = new THREE.MeshBasicMaterial({
+            color: 0x5eead4,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending
+        });
+        this.innerRing = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
+        this.innerRing.scale.set(0, 0, 1);
+        this.scene.add(this.innerRing);
+    }
+
+    createGlow() {
+        // Central glow sprite
+        const spriteMaterial = new THREE.SpriteMaterial({
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending
+        });
+        this.glowSprite = new THREE.Sprite(spriteMaterial);
+        this.glowSprite.scale.set(8, 8, 1);
+        this.scene.add(this.glowSprite);
+    }
+
+    setupEventListeners() {
+        this.container.addEventListener('mouseenter', () => {
+            this.isHovered = true;
+            this.targetConvergence = 1;
+        });
+
+        this.container.addEventListener('mouseleave', () => {
+            this.isHovered = false;
+            this.targetConvergence = 0;
+        });
+
+        this.container.addEventListener('mousemove', (e) => {
+            const rect = this.container.getBoundingClientRect();
+            this.mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            this.mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        });
+
+        this.container.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.activatePortal();
+        });
+
+        // Handle resize
+        window.addEventListener('resize', () => this.onResize());
+    }
+
+    activatePortal() {
+        // Flash effect
+        if (this.glowSprite) {
+            gsap.to(this.glowSprite.material, {
+                opacity: 1,
+                duration: 0.15,
+                onComplete: () => {
+                    gsap.to(this.glowSprite.material, {
+                        opacity: 0,
+                        duration: 0.3
+                    });
+                }
+            });
+        }
+
+        // Handle "More Projects" tile with simple direct navigation
+        if (this.projectData.id === 'more-projects') {
+            // Create overlay for smooth fade transition
+            let overlay = document.getElementById('page-transition-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'page-transition-overlay';
+                overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;opacity:0;pointer-events:none;z-index:1000;';
+                document.body.appendChild(overlay);
+            }
+
+            // Fade out content and navigate
+            const tiles = document.querySelectorAll('.portal-container, #github-profile, #contact-btn');
+            tiles.forEach(el => {
+                if (el) {
+                    el.style.transition = 'opacity 0.4s ease-out';
+                    el.style.opacity = '0';
+                }
+            });
+
+            // Fade in the overlay
+            overlay.style.transition = 'opacity 0.5s ease-in';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 200);
+
+            // Navigate after fade completes
+            setTimeout(() => {
+                window.location.href = this.projectData.url;
+            }, 600);
+            return;
+        }
+
+        // Navigate after brief delay for other portals
+        setTimeout(() => {
+            if (this.projectData.target === '_blank') {
+                window.open(this.projectData.url, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = this.projectData.url;
+            }
+        }, 200);
+    }
+
+    onResize() {
+        if (!this.canvas || !this.renderer) return;
+        this.renderer.setSize(this.canvas.offsetWidth, this.canvas.offsetHeight);
+    }
+
+    animate() {
+        this.animationId = requestAnimationFrame(() => this.animate());
+
+        const elapsed = this.clock.getElapsedTime();
+
+        // Smooth convergence animation
+        const convergenceSpeed = 0.08;
+        this.convergenceProgress += (this.targetConvergence - this.convergenceProgress) * convergenceSpeed;
+
+        // Update star positions
+        this.updateStars(elapsed);
+
+        // Update constellation lines
+        this.updateLines();
+
+        // Update portal ring
+        this.updatePortalRing();
+
+        // Update glow
+        this.updateGlow();
+
+        // Camera tilt based on mouse
+        if (this.isHovered) {
+            this.camera.position.x = this.mouseX * 0.5;
+            this.camera.position.y = -this.mouseY * 0.5;
+            this.camera.lookAt(0, 0, 0);
+        } else {
+            this.camera.position.x *= 0.9;
+            this.camera.position.y *= 0.9;
+            this.camera.lookAt(0, 0, 0);
+        }
+
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    updateStars(elapsed) {
+        if (!this.starPoints) return;
+
+        const positions = this.starPoints.geometry.attributes.position.array;
+
+        for (let i = 0; i < this.numStars; i++) {
+            const scattered = this.scatteredPositions[i];
+            const converged = this.convergedPositions[i];
+
+            // Add idle drift to scattered positions
+            const drift = Math.sin(elapsed * scattered.driftSpeed + scattered.driftOffset) * 0.15;
+            const driftY = Math.cos(elapsed * scattered.driftSpeed * 0.7 + scattered.driftOffset) * 0.15;
+
+            // Interpolate between scattered and converged
+            const t = this.convergenceProgress;
+            const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            this.stars[i].x = scattered.x + drift + (converged.x - scattered.x - drift) * easeT;
+            this.stars[i].y = scattered.y + driftY + (converged.y - scattered.y - driftY) * easeT;
+            this.stars[i].z = scattered.z + (converged.z - scattered.z) * easeT;
+
+            positions[i * 3] = this.stars[i].x;
+            positions[i * 3 + 1] = this.stars[i].y;
+            positions[i * 3 + 2] = this.stars[i].z;
+        }
+
+        this.starPoints.geometry.attributes.position.needsUpdate = true;
+
+        // Pulse star brightness when converged
+        const pulse = 0.9 + Math.sin(elapsed * 3) * 0.1 * this.convergenceProgress;
+        this.starPoints.material.opacity = 0.9 * pulse;
+    }
+
+    updateLines() {
+        if (!this.linesMesh) return;
+
+        const positions = this.linesMesh.geometry.attributes.position.array;
+
+        for (let i = 0; i < this.constellationLines.length; i++) {
+            const line = this.constellationLines[i];
+            const fromStar = this.stars[line.from];
+            const toStar = this.stars[line.to];
+
+            positions[i * 6] = fromStar.x;
+            positions[i * 6 + 1] = fromStar.y;
+            positions[i * 6 + 2] = fromStar.z;
+            positions[i * 6 + 3] = toStar.x;
+            positions[i * 6 + 4] = toStar.y;
+            positions[i * 6 + 5] = toStar.z;
+        }
+
+        this.linesMesh.geometry.attributes.position.needsUpdate = true;
+
+        // Fade out lines as stars converge
+        this.linesMesh.material.opacity = 0.25 * (1 - this.convergenceProgress);
+    }
+
+    updatePortalRing() {
+        if (!this.portalRing) return;
+
+        const t = this.convergenceProgress;
+        const scale = t * 1;
+
+        this.portalRing.scale.set(scale, scale, 1);
+        this.portalRing.material.opacity = t * 0.8;
+        this.portalRing.rotation.z += 0.005;
+
+        if (this.innerRing) {
+            this.innerRing.scale.set(scale, scale, 1);
+            this.innerRing.material.opacity = t * 0.5;
+            this.innerRing.rotation.z -= 0.008;
+        }
+    }
+
+    updateGlow() {
+        if (!this.glowSprite) return;
+
+        // Subtle glow that pulses when converged
+        const baseOpacity = this.convergenceProgress * 0.15;
+        const pulse = Math.sin(this.clock.getElapsedTime() * 2) * 0.05;
+        this.glowSprite.material.opacity = Math.max(0, baseOpacity + pulse * this.convergenceProgress);
+    }
+
+    destroy() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+        if (this.renderer) {
+            this.renderer.dispose();
+        }
+        if (this.scene) {
+            this.scene.traverse((object) => {
+                if (object.geometry) object.geometry.dispose();
+                if (object.material) {
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach(m => m.dispose());
+                    } else {
+                        object.material.dispose();
+                    }
+                }
+            });
+        }
+    }
+}
+
+// Initialize all constellation portals
+function initConstellationPortals() {
+    const containers = document.querySelectorAll('.portal-container');
+
+    containers.forEach((container, index) => {
+        // Add visible class with stagger
+        setTimeout(() => {
+            container.classList.add('visible');
+        }, index * 100);
+
+        // Create portal instance
+        const portal = new ConstellationPortal(container);
+        portalInstances.push(portal);
+    });
+}
+
+// Animate portals in (called after camera transition)
+function animatePortalsIn() {
+    const containers = document.querySelectorAll('.portal-container');
+    containers.forEach((container, index) => {
+        setTimeout(() => {
+            container.classList.add('visible');
+        }, index * 100);
+    });
+}
