@@ -351,7 +351,8 @@ function initThreeJS() {
                 if (funPortalsGrid && !isMobileDevice) {
                     initConstellationPortals();
                 } else {
-                    animateTilesIn('#fun-projects-tiles-section .futuristic-card-link');
+                    // Mobile fallback: animate portal containers as simple cards
+                    animateMobilePortals('#fun-projects-tiles-section .portal-container');
                 }
                 tilesAnimated = true;
              }, 100); // Small delay
@@ -407,6 +408,35 @@ function animateTilesIn(selector) {
     });
 }
 
+/**
+ * Mobile fallback: Animates portal containers as simple clickable cards.
+ * On mobile, the Three.js canvas is hidden via CSS, showing portal-content directly.
+ */
+function animateMobilePortals(selector) {
+    const portals = document.querySelectorAll(selector);
+    portals.forEach((portal, i) => {
+        if (portal) {
+            // Add visible class with stagger
+            setTimeout(() => {
+                portal.classList.add('visible');
+            }, i * 100);
+
+            // Ensure click navigation works on mobile
+            portal.addEventListener('click', (e) => {
+                const url = portal.dataset.url;
+                const target = portal.dataset.target || '_blank';
+                if (url) {
+                    if (target === '_blank') {
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                    } else {
+                        window.location.href = url;
+                    }
+                }
+            });
+        }
+    });
+}
+
 let currentLookAt = new THREE.Vector3();
 
 /**
@@ -458,8 +488,8 @@ function animate() {
                             animatePortalsIn();
                         }
                     } else {
-                        // Fallback to old tile animation
-                        animateTilesIn('#tiles-section .futuristic-card-link');
+                        // Mobile fallback: animate portal containers as simple cards
+                        animateMobilePortals('#tiles-section .portal-container');
                     }
                     tilesAnimated = true;
                 }
