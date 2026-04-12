@@ -1,0 +1,5 @@
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/fun-projects.html
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/index.html
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/style.css
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/script.js
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/new-folder/T4b.png

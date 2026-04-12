@@ -695,6 +695,192 @@ body {
   }
 
 /* ============================================
+   CLEAN GALLERY LAYOUT
+   ============================================ */
+
+.gallery {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* --- Featured Row (2 large cards) --- */
+.gallery-featured {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.tiles-section.active .gallery-featured {
+    animation: galIn 0.7s ease-out 0.1s forwards;
+}
+
+/* --- Projects Grid (3 columns) --- */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.tiles-section.active .gallery-grid {
+    animation: galIn 0.7s ease-out 0.35s forwards;
+}
+
+@keyframes galIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Card --- */
+.gallery-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.35s ease;
+}
+
+.gallery-card:hover {
+    transform: translateY(-6px);
+}
+
+/* --- Image Container --- */
+.gallery-img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #111;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+    transition: box-shadow 0.35s ease, border-color 0.35s ease;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.gallery-card:hover .gallery-img {
+    box-shadow:
+        0 12px 40px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.gallery-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.gallery-card:hover .gallery-img img {
+    transform: scale(1.04);
+}
+
+/* --- Label (below image) --- */
+.gallery-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0 0.15rem;
+}
+
+.gallery-label strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    letter-spacing: 0.005em;
+}
+
+.gallery-card-lg .gallery-label strong {
+    font-size: 1.1rem;
+}
+
+.gallery-label span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.4);
+}
+
+.gallery-type {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(56,189,248,0.7) !important;
+}
+
+/* --- More Projects --- */
+.gallery-more-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, rgba(20,25,40,0.95), rgba(15,20,35,0.95));
+    color: rgba(255,255,255,0.2);
+    transition: color 0.35s ease;
+}
+
+.gallery-card:hover .gallery-more-img {
+    color: rgba(56,189,248,0.6);
+}
+
+.gallery-more-img svg {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gallery-card:hover .gallery-more-img svg {
+    transform: translateX(6px);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .gallery {
+        gap: 2rem;
+        padding: 0 1.5rem;
+    }
+    .gallery-featured {
+        gap: 1.25rem;
+    }
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .gallery {
+        gap: 1.5rem;
+        padding: 0 0.75rem;
+    }
+    .gallery-featured {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .gallery-img {
+        border-radius: 12px;
+    }
+    .gallery-label strong {
+        font-size: 0.9rem;
+    }
+    .gallery-card-lg .gallery-label strong {
+        font-size: 0.95rem;
+    }
+}
+
+
+/* ============================================
    LIVING CONSTELLATION PORTALS
    ============================================ */
 
