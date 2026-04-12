@@ -1,3 +1,81 @@
+/* ============================================
+   SELF-HOSTED FONTS (GDPR compliant)
+   ============================================ */
+
+/* Inter — latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Inter — latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Inter 700 — latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Inter 700 — latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Inter 900 — latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Inter 900 — latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Montserrat 700 — latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/montserrat-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Montserrat 700 — latin */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/montserrat-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* General body styles */
 body {
     margin: 0;
@@ -232,199 +310,6 @@ body {
   }
   
   
-/* === START: Luxury Liquid Glass Tile Styles === */
-:root {
-  --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  --glass-border: rgba(255,255,255,0.14);
-  --glass-highlight: rgba(56,189,248,0.55);
-  --glass-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 10px 30px rgba(56,189,248,0.12);
-}
-
-/* Link container */
-.futuristic-card-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    width: 100%;
-    max-width: 360px;
-    opacity: 0;
-    transform: translateY(70px) scale(0.96);
-    will-change: transform, opacity;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
-                opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-    margin-bottom: 2.6rem;
-}
-
-.futuristic-card-link.visible {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.futuristic-card {
-    position: relative;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 22px;
-    padding: 1rem;
-    overflow: hidden;
-    box-shadow: var(--glass-shadow);
-    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
-    -webkit-backdrop-filter: blur(18px) saturate(150%);
-    backdrop-filter: blur(18px) saturate(150%);
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    isolation: isolate;
-}
-
-.futuristic-card::before {
-    content: "";
-    position: absolute;
-    inset: -40% 8%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.14), transparent 45%),
-                radial-gradient(circle at 80% 0%, rgba(56,189,248,0.16), transparent 45%);
-    filter: blur(26px);
-    opacity: 0.35;
-    transform: rotate(8deg) scale(1.1);
-    transition: opacity 0.6s ease, transform 0.8s ease;
-    z-index: 0;
-}
-
-.futuristic-card::after {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    border-radius: inherit;
-    background: linear-gradient(120deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
-    mix-blend-mode: screen;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: 1;
-}
-
-.futuristic-card-link:hover .futuristic-card {
-    transform: translateY(-10px) scale(1.01);
-    border-color: var(--glass-highlight);
-    box-shadow: 0 28px 70px rgba(0,0,0,0.65), 0 16px 40px rgba(56,189,248,0.2);
-    background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(15,23,42,0.55));
-}
-
-.futuristic-card-link:hover .futuristic-card::before {
-    opacity: 0.6;
-    transform: rotate(4deg) scale(1.2);
-}
-
-.futuristic-card-link:hover .futuristic-card::after {
-    opacity: 0.6;
-}
-
-.futuristic-card-image,
-.futuristic-card-content-placeholder {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    border-radius: 16px;
-    overflow: hidden;
-    background: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.2), rgba(15,23,42,0.9));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.03);
-}
-
-.futuristic-card-image::after,
-.futuristic-card-content-placeholder::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 40%);
-    opacity: 0.18;
-    pointer-events: none;
-}
-
-.futuristic-card-image img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-    background: transparent;
-}
-
-.futuristic-card-link:hover .futuristic-card-image img {
-    transform: scale(1.06);
-}
-
-.futuristic-card-title {
-    text-align: center;
-    color: #e5e7eb;
-    margin-top: 1.25rem;
-    font-size: 1.05rem;
-    line-height: 1.5;
-    font-weight: 700;
-    padding: 0 0.2rem;
-    transition: color 0.3s ease-out;
-    flex-grow: 1;
-    padding-bottom: 0.5rem;
-    letter-spacing: 0.01em;
-}
-
-.futuristic-card-subtitle {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #cbd5f5;
-    letter-spacing: 0.02em;
-}
-
-.futuristic-card-link:hover .futuristic-card-title {
-   color: #f8fafc;
-}
-
-.placeholder-gradient {
-    background: radial-gradient(circle at 25% 25%, rgba(94,234,212,0.25), rgba(14,165,233,0.35), rgba(15,23,42,0.95));
-    color: #e0f2fe;
-}
-
-.placeholder-label {
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.placeholder-card {
-    cursor: pointer;
-}
-
-.fun-project-card .futuristic-card-content-placeholder {
-    background: radial-gradient(circle at 15% 20%, rgba(94,234,212,0.18), rgba(56,189,248,0.32), rgba(15,23,42,0.92));
-}
-
-#back-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem 2.6rem;
-    border-radius: 1.6rem;
-    position: relative;
-    z-index: 20;
-}
-  
-  /* === Responsive Adjustments === */
-  
-  /* Adjustments for the GRID/FLEX CONTAINER's gap */
-  @media (max-width: 640px) {
-     /* Tailwind gap classes handle this better */
-  }
-  
-  @media (min-width: 641px) and (max-width: 1024px) {
-    /* Tailwind classes handle this better */
-  }
   
 /* Consolidated mobile adjustments */
 @media (max-width: 640px) {
@@ -471,44 +356,6 @@ body {
       margin: 0 auto;
       padding: 0;
   }
-  .futuristic-card-link {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0;
-  }
-  .futuristic-card {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 14px;
-      box-sizing: border-box;
-  }
-  .futuristic-card-image,
-  .futuristic-card-content-placeholder {
-      border-radius: 10px;
-      aspect-ratio: 16 / 10;
-      width: 100%;
-      min-height: 0;
-      height: auto;
-  }
-  .futuristic-card-image img {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      object-position: center;
-      display: block;
-      max-height: 45vh;
-      background: #111827;
-      border-radius: 10px;
-  }
-  .futuristic-card-title {
-      font-size: 1rem;
-      line-height: 1.35;
-      margin-top: 0.75rem;
-      padding-bottom: 0.35rem;
-      text-align: center;
-      word-break: break-word;
-  }
   #github-profile {
       margin-top: 0.5rem;
       margin-bottom: 3.5rem;
@@ -547,19 +394,6 @@ body {
       line-height: 1.25;
   }
 }
-
-  /* Responsive adjustments for medium screens (Optional: refine card max-width) */
-  @media (min-width: 641px) and (max-width: 1024px) {
-    .futuristic-card-link {
-        max-width: 320px; /* Slightly smaller max-width for medium screens */
-        margin-bottom: 1.8rem; /* Adjust bottom margin for tablets */
-    }
-    .futuristic-card-image,
-    .futuristic-card-content-placeholder {
-       /* Keep aspect ratio defined earlier or adjust if needed */
-       /* aspect-ratio: 4/3; */
-    }
-  }
 
   /* GitHub Profile Section */
   #github-profile {
@@ -748,8 +582,12 @@ body {
     transition: transform 0.35s ease;
 }
 
-.gallery-card:hover {
+.gallery-card:hover,
+.gallery-card:focus-visible {
     transform: translateY(-6px);
+    outline: 2px solid rgba(56,189,248,0.6);
+    outline-offset: 4px;
+    border-radius: 16px;
 }
 
 /* --- Image Container --- */
@@ -765,7 +603,8 @@ body {
     border: 1px solid rgba(255,255,255,0.04);
 }
 
-.gallery-card:hover .gallery-img {
+.gallery-card:hover .gallery-img,
+.gallery-card:focus-visible .gallery-img {
     box-shadow:
         0 12px 40px rgba(0,0,0,0.5),
         0 0 0 1px rgba(255,255,255,0.08);
@@ -779,7 +618,8 @@ body {
     transition: transform 0.5s ease;
 }
 
-.gallery-card:hover .gallery-img img {
+.gallery-card:hover .gallery-img img,
+.gallery-card:focus-visible .gallery-img img {
     transform: scale(1.04);
 }
 
@@ -828,7 +668,8 @@ body {
     transition: color 0.35s ease;
 }
 
-.gallery-card:hover .gallery-more-img {
+.gallery-card:hover .gallery-more-img,
+.gallery-card:focus-visible .gallery-more-img {
     color: rgba(56,189,248,0.6);
 }
 
@@ -836,7 +677,8 @@ body {
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.gallery-card:hover .gallery-more-img svg {
+.gallery-card:hover .gallery-more-img svg,
+.gallery-card:focus-visible .gallery-more-img svg {
     transform: translateX(6px);
 }
 

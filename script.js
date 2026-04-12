@@ -13,21 +13,6 @@ let starBaseColors = []; // Original colors for reference during animation
 const portalInstances = [];
 const isMobileDevice = window.innerWidth < 768 || 'ontouchstart' in window;
 
-// --- Security: Input Sanitization Function ---
-function sanitizeText(text) {
-    if (typeof text !== 'string') return '';
-    // Remove potentially harmful characters and HTML tags
-    return text.replace(/[<>"'&]/g, function(match) {
-        const escapeChars = {
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#x27;',
-            '&': '&amp;'
-        };
-        return escapeChars[match];
-    }).substring(0, 500); // Limit length to prevent DoS
-}
 let isFlying = false; // Flag for camera animation state (index page only)
 let flyStartTime = 0;
 const flyDuration = 3.0;
@@ -881,9 +866,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Expose helpers for quick debugging
-        window.__openContactModal = openModal;
-        window.__closeContactModal = closeModalFn;
     }
 
     if (contactForm && contactModal && contactSuccess) {
