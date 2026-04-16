@@ -697,6 +697,11 @@ body {
     }
 }
 
+/* Center the last card when 4 items in 3-col grid (fun-projects page) */
+#fun-projects-tiles-section .gallery-grid .gallery-card:last-child:nth-child(3n + 1) {
+    grid-column: 2;
+}
+
 @media (max-width: 640px) {
     .gallery {
         gap: 1.5rem;
