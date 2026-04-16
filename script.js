@@ -1107,12 +1107,7 @@ document.addEventListener('DOMContentLoaded', () => {
              }
             // Add similar logic for the back button if desired
             else if (isFunProjectsPage && targetLink.id === 'back-btn') {
-                 event.preventDefault();
-                 document.body.style.transition = 'opacity 0.5s ease-out';
-                 document.body.style.opacity = 0;
-                 setTimeout(() => {
-                     window.location.href = targetLink.href;
-                 }, 500);
+                 // Handled by dedicated back-btn click listener — skip here
             }
         }
     });
@@ -1122,11 +1117,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backBtn && isFunProjectsPage) {
         backBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            if (!isTransitioningBack) {
-                isTransitioningBack = true;
-                backTransitionStartTime = performance.now();
-                currentLookAt = camera.getWorldDirection(new THREE.Vector3());
-            }
+            e.stopPropagation();
+            window.location.href = '../#tiles';
         });
     }
 
