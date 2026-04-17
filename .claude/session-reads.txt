@@ -3,3 +3,7 @@
 /Users/equinox/Documents/GitHub/onekapischofficialwebsite/style.css
 /Users/equinox/Documents/GitHub/onekapischofficialwebsite/script.js
 /Users/equinox/Documents/GitHub/onekapischofficialwebsite/new-folder/T4b.png
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/robots.txt
+/Users/equinox/.claude/hooks/pretool-unified-gate.py
+/Users/equinox/claude-code-toolkit/skills/pr-sync/SKILL.md
+/Users/equinox/Documents/GitHub/onekapischofficialwebsite/fun-projects/index.html
